@@ -24,10 +24,10 @@ async def initialize_clients():
                 await asyncio.sleep(2)
                 print("This will take some time, please wait...")
             client = await Client(
-                session_name=":memory:",
+                session_name=token,
                 api_id=Var.API_ID,
                 api_hash=Var.API_HASH,
-                bot_token=token,
+                # bot_token=token,
                 sleep_threshold=Var.SLEEP_THRESHOLD,
                 no_updates=True,
             ).start()

@@ -1,16 +1,16 @@
 <h1 align="center">Telegram File Stream Bot</h3>
 <p align="center">
-  <a href="https://github.com/EverythingSuckz/TG-FileStreamBot">
-    <img src="https://socialify.git.ci/EverythingSuckz/TG-FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&logo=https%3A%2F%2Fwww.flaticon.com%2Fpremium-icon%2Ficons%2Fsvg%2F2321%2F2321089.svg&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark" alt="Cover Image" width="650">
+  <a href="https://github.com/DeekshithSH/FileStreamBot">
+    <img src="https://socialify.git.ci/DeekshithSH/FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="FileStreamBot" width="640" height="320" />
   </a>
   <p align="center">
     A Telegram bot to stream files to web
     <br />
     <a href="https://telegram.dog/TG_FileStreamBot"><strong>Demo Bot »</strong></a>
     <br />
-    <a href="https://github.com/EverythingSuckz/TG-FileStreamBot/issues">Report a Bug</a>
+    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
     |
-    <a href="https://github.com/EverythingSuckz/TG-FileStreamBot/issues">Request Feature</a>
+    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Request Feature</a>
   </p>
 </p>
 
@@ -47,7 +47,7 @@
 ## About This Bot
 
 <p align="center">
-    <a herf="https://github.com/EverythingSuckz/TG-FileStreamBot">
+    <a herf="https://github.com/DeekshithSH/FileStreamBot">
         <img src="https://www.flaticon.com/premium-icon/icons/svg/2626/2626281.svg" height="100" width="100" alt="Telegram Logo">
     </a>
 </p>
@@ -67,15 +67,15 @@ Either you could locally host or deploy on [Heroku](https://heroku.com)
 
 Press the below button to fast deploy to Heroku
 
-- [![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://github.com/eyMarv/ultraMarv-roku)
+- [![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 then goto the <a href="#mandatory-vars">variables tab</a> for more info on setting up environmental variables.
 
 ### Host it on VPS or Locally
 
 ```sh
-git clone https://github.com/EverythingSuckz/TG-FileStreamBot
-cd TG-FileStreamBot
+git clone https://github.com/DeekshithSH/FileStreamBot
+cd FileStreamBot
 virtualenv -p /usr/bin/python3 venv
 . ./venv/bin/activate
 pip install -r requirements.txt
@@ -163,7 +163,8 @@ Feel free to contribute to this project if you have any further ideas
 [![Telegram Channel](https://img.shields.io/static/v1?label=Join&message=Telegram%20Channel&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/WhySooSerious)
 [![Telegram Group](https://img.shields.io/static/v1?label=Join&message=Telegram%20Group&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/WhyThisUsername)
 
-You can contact either via my [Telegram Group](https://xn--r1a.click/WhyThisUsername) ~~or you can PM me on [@EverythingSuckz](https://xn--r1a.click/EverythingSuckz)~~
+You can contact either via my [Telegram Group](https://xn--r1a.click/WhyThisUsername) ~~or you can PM me on [@DeekshithSH](https://xn--r1a.click/DeekshithSH)~~
+
 
 ## Credits
 

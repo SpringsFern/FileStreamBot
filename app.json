@@ -1,0 +1,82 @@
+{
+    "name": "t3f5",
+    "description": "A Pyrogram Telegram bot to access Telegram Files via the web.",
+    "keywords": [
+        "telegram",
+        "web",
+        "pyrogram",
+        "aiohttp",
+        "python",
+        "plugin",
+        "modular",
+        "media"
+      ],
+    "repository": "https://github.com/EverythingSuckz/TG-FileStreamBot",
+    "success_url": "/",
+    "website": "stream.wrench.gq",
+    "env": {
+        "ENV": {
+            "description": "Set this to True if you don't want to crash the bot",
+            "value": "True"
+        },
+        "APP_NAME": {
+            "description": "Copy-Paste the app name that you just typed above."
+        },
+        "API_ID": {
+            "description": "Get this value from https://my.telegram.org"
+        },
+        "API_HASH": {
+            "description": "Get this value from https://my.telegram.org"
+        },
+        "BOT_TOKEN": {
+            "description": "Get this value from @BotFather"
+        },
+        "BIN_CHANNEL": {
+            "description": "The BIN Channel ID. Read the readme for more info about this var"
+        },
+        "WORKERS": {
+            "description": "Number of workers that is to be assigned. Read the readme for more info about this var",
+            "required": false
+        },
+        "PING_INTERVAL": {
+            "description": "The time in ms you want the servers to be pinged each time to avoid sleeping.",
+            "required": false
+        },
+        "FQDN": {
+            "description": "Read the readme for more info about this var",
+            "required": false
+        },
+        "DATABASE_URL": {
+            "description": "MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in Support Group: https://t.me/linux_repo"
+        },
+        "UPDATES_CHANNEL": {
+            "description": "Put a Public Channel Username, so every user have to Join that channel to use the bot. Must add bot to channel as Admin to work properly.",
+            "required": false
+  
+        },
+        "FORCE_UPDATES_CHANNEL": {
+          "description": "If Set to True User Need to Join Your Update Channel to Use Your Bot",
+          "value": "False"
+        },
+        "OWNER_ID": {
+            "description": "Your Telegram User ID"
+        },
+        "SESSION_NAME": {
+            "description": " Session Name for Bot [ Add AvishkarPatil ]",
+            "required": false
+        },
+        "BANNED_CHANNELS": {
+            "description": "Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with Space.",
+            "required": false
+        }
+    },
+    "buildpacks": [{
+        "url": "heroku/python"
+      }],
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+  }
