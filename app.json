@@ -50,13 +50,13 @@
             "description": "MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in Support Group: https://t.me/linux_repo"
         },
         "UPDATES_CHANNEL": {
-            "description": "Put a Public Channel Username, so every user have to Join that channel to use the bot. Must add bot to channel as Admin to work properly.",
+            "description": "Update Channel shown with Start Text",
             "required": false
   
         },
         "FORCE_UPDATES_CHANNEL": {
-          "description": "If Set to True User Need to Join Your Update Channel to Use Your Bot",
-          "value": "False"
+          "description": "Set to True, so every user have to Join update channel to use the bot.",
+          "value": false
         },
         "OWNER_ID": {
             "description": "Your Telegram User ID"
