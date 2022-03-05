@@ -6,7 +6,7 @@
   <p align="center">
     A Telegram bot to stream files to web
     <br />
-    <a href="https://telegram.dog/TG_FileStreamBot"><strong>Demo Bot »</strong></a>
+    <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot »</strong></a>
     <br />
     <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
     |
@@ -103,6 +103,7 @@ BIN_CHANNEL=-100
 PORT=8080
 FQDN=yourserverip
 HAS_SSL=False
+DATABASE_URL=mongodb_uri
 ```
 
 ### Mandatory Vars
@@ -115,14 +116,20 @@ HAS_SSL=False
 
 `BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `\id`. Now copy paste the forwarded channel ID in this field. 
 
+`OWNER_ID` : Your Telegram User ID
+
+`DATABASE_URL` : MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in [Me Telegram](https://t.me/Avishkarpatil).
+
 ### For MultiClient
 
-`MULTI_TOKEN1`: Add your first bot token here.
+`MULTI_TOKEN1`: Add your first bot token or session strings here.
 
-`MULTI_TOKEN2`: Add your second bot token here.
+`MULTI_TOKEN2`: Add your second bot token or session strings here.
 
 you may also add as many as bots you want. (max limit is not tested yet)
 `MULTI_TOKEN3`, `MULTI_TOKEN4`, etc.
+
+
 
 ### Optional Vars
 
@@ -141,6 +148,11 @@ you may also add as many as bots you want. (max limit is not tested yet)
 `HAS_SSL` : (can be either `True` or `False`) If you want the generated links in https format.
 
 `PING_INTERVAL` : The time in ms you want the servers to be pinged each time to avoid sleeping (Only for Heroku). Defaults to `1200` or 20 minutes.
+
+`UPDATES_CHANNEL` : Update Channel shown with Start Text
+
+`FORCE_UPDATES_CHANNEL` : Set to True, so every user have to Join update channel to use the bot.
+
 ## How to use the bot
 
 :warning: **Before using the  bot, don't forget to add all the bots (multi-client ones too) to the `BIN_CHANNEL` as an admin**
