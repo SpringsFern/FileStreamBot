@@ -50,7 +50,7 @@ async def cb_data(bot, update: CallbackQuery):
     lang = getattr(Translation, "en")
     if update.data == "home":
         await update.message.edit_text(
-            text=lang.START_TEXT.format(update.from_user.mention, await db.total_users_count()),
+            text=lang.START_TEXT.format(update.from_user.mention),
             disable_web_page_preview=True,
             reply_markup=START_BUTTONS
         )
@@ -175,7 +175,7 @@ async def start(b, m):
                     disable_web_page_preview=True)
                 return
         await m.reply_text(
-            text=lang.START_TEXT.format(m.from_user.mention, await db.total_users_count()),
+            text=lang.START_TEXT.format(m.from_user.mention),
             parse_mode="HTML",
             disable_web_page_preview=True,
             reply_markup=START_BUTTONS
