@@ -28,6 +28,7 @@ async def sts(b, m: Message):
     id = m.text.split("/ban ")[-1]
     if not await db.is_user_banned(int(id)):
         await db.ban_user(int(id))
+        await db.delete_user(int(id))
         if await db.is_user_banned(int(id)):
             await m.reply_text(text=f"`{id}`** is Banned** ", parse_mode="Markdown", quote=True)
             await b.send_message(
