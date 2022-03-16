@@ -90,4 +90,10 @@ async def gen_link(m: Message,log_msg: Messages, from_channel: bool):
     Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
     reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]])
 
+    if from_channel:
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]])
+    else:
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)],
+            [InlineKeyboardButton("❌ Delete Link", callback_data=f"msgdelconf2_{log_msg.message_id}_{get_media_file_unique_id(log_msg)}")]])
+
     return reply_markup, Stream_Text, stream_link
