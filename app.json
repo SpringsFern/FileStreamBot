@@ -71,7 +71,7 @@
         },
         "PAGE_LINK": {
             "description": "Your stream link, Return message_id, hash, mime_type as get request",
-            "required": true
+            "required": false
         }
     },
     "buildpacks": [{
