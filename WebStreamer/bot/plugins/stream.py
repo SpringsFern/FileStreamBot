@@ -1,5 +1,4 @@
-# (c) @Avishkarpatil |
-#  @DeekshithSH
+# This file is a part of FileStreamBot
 
 
 import asyncio
@@ -34,7 +33,7 @@ async def private_receive_handler(c: Client, m: Message):
     if await db.is_user_banned(m.from_user.id):
         await c.send_message(
                 chat_id=m.chat.id,
-                text=lang.ban_text,
+                text=lang.ban_text.format(Var.OWNER_ID),
                 parse_mode="markdown",
                 disable_web_page_preview=True
             )
@@ -51,7 +50,7 @@ async def private_receive_handler(c: Client, m: Message):
             if user.status == "kicked":
                 await c.send_message(
                     chat_id=m.chat.id,
-                    text=lang.ban_text,
+                    text=lang.ban_text.format(Var.OWNER_ID),
                     parse_mode="markdown",
                     disable_web_page_preview=True
                 )
@@ -69,7 +68,7 @@ async def private_receive_handler(c: Client, m: Message):
         except Exception:
             await c.send_message(
                 chat_id=m.chat.id,
-                text="**Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍʏ ʙᴏss** @DeekshithSH",
+                text=f"**Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. [Cᴏɴᴛᴀᴄᴛ ᴍʏ ʙᴏss](tg://user?id={Var.OWNER_ID})**",
                 parse_mode="markdown",
                 disable_web_page_preview=True)
             return

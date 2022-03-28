@@ -1,5 +1,4 @@
-# This file is a part of TG-FileStreamBot
-# Coding : Jyothis Jayanth [@EverythingSuckz]
+# This file is a part of FileStreamBot
 
 from .keepalive import ping_server
 from .config_parser import TokenParser

@@ -1,3 +1,5 @@
+# This file is a part of FileStreamBot
+
 from WebStreamer.vars import Var
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.human_readable import humanbytes

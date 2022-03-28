@@ -1,3 +1,5 @@
+# This file is a part of FileStreamBot
+
 from urllib.parse import quote_plus
 from pyrogram import Client
 from typing import Any, Optional

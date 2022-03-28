@@ -1,7 +1,6 @@
 # Taken from megadlbot_oss <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/webserver/__init__.py>
 # Thanks to Eyaadh <https://github.com/eyaadh>
-# This file is a part of TG-FileStreamBot
-# Coding : Jyothis Jayanth [@EverythingSuckz]
+# This file is a part of FileStreamBot
 
 from aiohttp import web
 from .stream_routes import routes

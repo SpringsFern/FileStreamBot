@@ -1,4 +1,4 @@
-# (c)  @Avishkarpatil
+# This file is a part of FileStreamBot
 
 import os
 import time

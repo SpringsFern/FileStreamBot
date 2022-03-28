@@ -4,9 +4,10 @@
     <img src="https://socialify.git.ci/DeekshithSH/FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="FileStreamBot" width="640" height="320" />
   </a>
   <p align="center">
-    A Telegram bot to stream files to web
+    A Telegram bot to stream files to web<br/>
+    <a href="https://github.com/DeekshithSH/TG-FileStreamBot">Check out my New Repository</a>
     <br />
-    <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot »</strong></a>
+    <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot (Not Available)»</strong></a>
     <br />
     <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
     |
@@ -95,11 +96,11 @@ An example of `.env` file:
 API_ID=452525
 API_HASH=esx576f8738x883f3sfzx83
 BOT_TOKEN=55838383:yourtbottokenhere
+BIN_CHANNEL=-100
 MULTI_CLIENT=True
 MULTI_TOKEN1=55838383:yourfirstmulticlientbottokenhere
 MULTI_TOKEN2=55838383:yoursecondmulticlientbottokenhere
 MULTI_TOKEN3=55838383:yourthirdmulticlientbottokenhere
-BIN_CHANNEL=-100
 PORT=8080
 FQDN=yourserverip
 HAS_SSL=False
@@ -172,15 +173,17 @@ Feel free to contribute to this project if you have any further ideas
 
 ## Contact me
 
-[![Telegram Channel](https://img.shields.io/static/v1?label=Join&message=Telegram%20Channel&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/WhySooSerious)
-[![Telegram Group](https://img.shields.io/static/v1?label=Join&message=Telegram%20Group&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/WhyThisUsername)
+[![Telegram Channel](https://img.shields.io/static/v1?label=Join&message=Telegram%20Channel&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/AWeirdText)
+[![Telegram Group](https://img.shields.io/static/v1?label=Join&message=Telegram%20Group&color=blueviolet&style=for-the-badge&logo=telegram&logoColor=violet)](https://xn--r1a.click/AWeirdString)
 
-You can contact either via my [Telegram Group](https://xn--r1a.click/WhyThisUsername) ~~or you can PM me on [@DeekshithSH](https://xn--r1a.click/DeekshithSH)~~
+You can contact either via my [Telegram Group](https://xn--r1a.click/AWeirdString) ~~or you can PM me on [@DeekshithSH](https://xn--r1a.click/DeekshithSH)~~
 
 
 ## Credits
 
-- Me
+- [Me](https://xn--r1a.click/DeekshithSH)
+- [EverythingSuckz](https://github.com/EverythingSuckz) for his [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot)
+- [Avishkar Patil](https://github.com/avipatilpro) for his [FileStreamBot](https://github.com/avipatilpro/FileStreamBot)
 - [eyaadh](https://github.com/eyaadh) for his awesome [Megatron Bot](https://github.com/eyaadh/megadlbot_oss).
 - [BlackStone](https://github.com/eyMarv) for adding multi-client support.
 - [Dan Tès](https://telegram.dog/haskell) for his [Pyrogram Library](https://github.com/pyrogram/pyrogram)

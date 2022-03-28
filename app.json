@@ -11,9 +11,9 @@
         "modular",
         "media"
       ],
-    "repository": "https://github.com/EverythingSuckz/TG-FileStreamBot",
+    "repository": "https://github.com/DeekshithSH/FileStreamBot",
     "success_url": "/",
-    "website": "stream.wrench.gq",
+    "website": "ftl.deekshith.eu.org",
     "env": {
         "ENV": {
             "description": "Set this to True if you don't want to crash the bot",
@@ -62,7 +62,7 @@
             "description": "Your Telegram User ID"
         },
         "SESSION_NAME": {
-            "description": " Session Name for Bot [ Add AvishkarPatil ]",
+            "description": " Session Name for Bot [ Add F2LxBot ]",
             "required": false
         },
         "BANNED_CHANNELS": {

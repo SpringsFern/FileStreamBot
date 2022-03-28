@@ -1,3 +1,5 @@
+# This file is a part of FileStreamBot
+
 from os import environ
 from typing import Dict, Optional
 

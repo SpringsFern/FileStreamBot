@@ -1,3 +1,4 @@
+# This file is a part of FileStreamBot
 
 def humanbytes(size):
     # https://stackoverflow.com/a/49361727/4723940

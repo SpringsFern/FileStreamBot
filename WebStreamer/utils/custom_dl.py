@@ -1,3 +1,5 @@
+# This file is a part of FileStreamBot
+
 import math
 import asyncio
 import logging

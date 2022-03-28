@@ -1,5 +1,4 @@
-# (c) @Avishkarpatil |
-#  @DeekshithSH
+# This file is a part of FileStreamBot
 
 import random
 from urllib.parse import quote_plus
@@ -136,7 +135,7 @@ async def start(b, m):
     if await db.is_user_banned(m.from_user.id):
         await b.send_message(
                 chat_id=m.chat.id,
-                text=lang.ban_text,
+                text=lang.ban_text.format(Var.OWNER_ID),
                 parse_mode="markdown",
                 disable_web_page_preview=True
             )
@@ -148,107 +147,42 @@ async def start(b, m):
             f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{m.from_user.first_name}](tg://user?id={m.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
         )
     usr_cmd = m.text.split("_")[-1]
-    # if usr_cmd == "/start":
-    if True:
-        if Var.FORCE_UPDATES_CHANNEL:
-            try:
-                user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
-                if user.status == "kicked":
-                    await b.send_message(
-                        chat_id=m.chat.id,
-                        text=lang.ban_text,
-                        parse_mode="markdown",
-                        disable_web_page_preview=True
-                    )
-                    return
-            except UserNotParticipant:
+    if Var.FORCE_UPDATES_CHANNEL:
+        try:
+            user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+            if user.status == "kicked":
                 await b.send_message(
                     chat_id=m.chat.id,
-                    text="<i>Jᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴍᴇ 🔐</i>",
-                    reply_markup=InlineKeyboardMarkup(
-                        [[
-                            InlineKeyboardButton("Jᴏɪɴ ɴᴏᴡ 🔓", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
-                            ]]
-                    ),
-                    parse_mode="HTML"
+                    text=lang.ban_text.format(Var.OWNER_ID),
+                    parse_mode="markdown",
+                    disable_web_page_preview=True
                 )
                 return
-            except Exception:
-                await b.send_message(
-                    chat_id=m.chat.id,
-                    text="<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/PublicLinkGenerator'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
-                    parse_mode="HTML",
-                    disable_web_page_preview=True)
-                return
-        await m.reply_text(
-            text=lang.START_TEXT.format(m.from_user.mention),
-            parse_mode="HTML",
-            disable_web_page_preview=True,
-            reply_markup=START_BUTTONS
+        except UserNotParticipant:
+            await b.send_message(
+                chat_id=m.chat.id,
+                text="<i>Jᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴍᴇ 🔐</i>",
+                reply_markup=InlineKeyboardMarkup(
+                    [[
+                        InlineKeyboardButton("Jᴏɪɴ ɴᴏᴡ 🔓", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
+                        ]]
+                ),
+                parse_mode="HTML"
             )
-
-
-    # else:
-    #     if Var.FORCE_UPDATES_CHANNEL:
-    #         try:
-    #             user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
-    #             if user.status == "kicked":
-    #                 await b.send_message(
-    #                     chat_id=m.chat.id,
-    #                     text=lang.ban_text,
-    #                     parse_mode="markdown",
-    #                     disable_web_page_preview=True
-    #                 )
-    #                 return
-    #         except UserNotParticipant:
-    #             await b.send_message(
-    #                 chat_id=m.chat.id,
-    #                 text="**Pʟᴇᴀsᴇ Jᴏɪɴ Mʏ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴛʜɪs Bᴏᴛ**!\n\n**Dᴜᴇ ᴛᴏ Oᴠᴇʀʟᴏᴀᴅ, Oɴʟʏ Cʜᴀɴɴᴇʟ Sᴜʙsᴄʀɪʙᴇʀs ᴄᴀɴ ᴜsᴇ ᴛʜᴇ Bᴏᴛ**!",
-    #                 reply_markup=InlineKeyboardMarkup(
-    #                     [[
-    #                       InlineKeyboardButton("🤖 Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ", url=f"https://t.me/{Var.UPDATES_CHANNEL}")],
-    #                      [InlineKeyboardButton("🔄 Refresh / Try Again", url=f"https://t.me/{(await b.get_me()).username}?start=msgid_{usr_cmd}")
-    #                     ]]
-    #                 ),
-    #                 parse_mode="markdown"
-    #             )
-    #             return
-    #         except Exception:
-    #             await b.send_message(
-    #                 chat_id=m.chat.id,
-    #                 text="**Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ** [ ᴄʟɪᴄᴋ ʜᴇʀᴇ ](https://t.me/PublicLinkGenerator).",
-    #                 parse_mode="markdown",
-    #                 disable_web_page_preview=True)
-    #             return
-    #     get_msg = await b.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(usr_cmd))
-    #     file_name = get_media_file_name(get_msg)
-    #     file_size = humanbytes(get_media_file_size(get_msg))
-
-    #     if Var.PAGE_LINK:
-    #         media_type = get_media_mime_type(get_msg)
-    #         page_link = f"https://{Var.PAGE_LINK}/?id={get_msg.message_id}&type={media_type}"
-    #     else:
-    #         page_link = f"{Var.URL}watch/{get_msg.message_id}"
-
-    #     settings, in_db = await db.Current_Settings_Link(m.from_user.id)
-    #     if in_db and settings['LinkWithBoth']:
-    #         stream_link = f"{Var.URL}{get_msg.message_id}"
-    #         stream_link2 = f"{Var.URL}{get_msg.message_id}/{quote_plus(get_media_file_name(m))}"
-    #         Stream_Text=lang.msg_bothlink_text.format(file_name, file_size, stream_link, stream_link2, page_link)
-    #     elif in_db and not settings['LinkWithName']:
-    #         stream_link = f"{Var.URL}{get_msg.message_id}"
-    #         Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
-    #     else:
-    #         stream_link = f"{Var.URL}{get_msg.message_id}/{quote_plus(get_media_file_name(m))}"
-    #         Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
-
-    #     await m.reply_text(
-    #         text=Stream_Text,
-    #         parse_mode="HTML",
-    #         disable_web_page_preview=True,
-    #         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]]),
-    #         quote=True
-    #     )
+            return
+        except Exception:
+            await b.send_message(
+                chat_id=m.chat.id,
+                text="<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/PublicLinkGenerator'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
+                parse_mode="HTML",
+                disable_web_page_preview=True)
+            return
+    await m.reply_text(
+        text=lang.START_TEXT.format(m.from_user.mention),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+        reply_markup=START_BUTTONS
+        )
 
 
 @StreamBot.on_message(filters.private & filters.command(["about"]))
@@ -270,7 +204,7 @@ async def help_handler(bot, message):
     if await db.is_user_banned(message.from_user.id):
         await bot.send_message(
                 chat_id=message.chat.id,
-                text=lang.ban_text,
+                text=lang.ban_text.format(Var.OWNER_ID),
                 parse_mode="markdown",
                 disable_web_page_preview=True
             )
@@ -287,7 +221,7 @@ async def help_handler(bot, message):
             if user.status == "kicked":
                 await bot.send_message(
                     chat_id=message.chat.id,
-                    text=lang.ban_text,
+                    text=lang.ban_text.format(Var.OWNER_ID),
                     parse_mode="HTML",
                     disable_web_page_preview=True
                 )
@@ -318,7 +252,7 @@ async def help_handler(bot, message):
         reply_markup=HELP_BUTTONS
         )
 
-# ----------------------------- for me you can remove below line -------------------------------------------------------
+# -----------------------------Only for me you can remove below line -------------------------------------------------------
 
 @StreamBot.on_message(filters.command('getid') & filters.private & ~filters.edited)
 async def start(b, m):

@@ -1,5 +1,4 @@
-# This file is a part of TG-FileStreamBot
-# Coding : Jyothis Jayanth [@EverythingSuckz]
+# This file is a part of FileStreamBot
 
 from os import environ
 from dotenv import load_dotenv
@@ -44,7 +43,7 @@ class Var(object):
     DATABASE_URL = str(environ.get('DATABASE_URL'))
     UPDATES_CHANNEL = str(environ.get('UPDATES_CHANNEL', "aredirect"))
     PAGE_LINK = environ.get('PAGE_LINK', None)
-    OWNER_ID = int(environ.get('OWNER_ID', '797848243'))
+    OWNER_ID = int(environ.get('OWNER_ID', '777000'))
     SESSION_NAME = str(environ.get('SESSION_NAME', 'F2LxBot'))
     FORCE_UPDATES_CHANNEL = environ.get('FORCE_UPDATES_CHANNEL', False)
     FORCE_UPDATES_CHANNEL = True if str(FORCE_UPDATES_CHANNEL).lower() == "true" and UPDATES_CHANNEL != 'aredirect' else False
