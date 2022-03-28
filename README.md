@@ -5,8 +5,6 @@
   </a>
   <p align="center">
     A Telegram bot to stream files to web<br/>
-    <a href="https://github.com/DeekshithSH/TG-FileStreamBot">Check out my New Repository</a>
-    <br />
     <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot (Not Available)»</strong></a>
     <br />
     <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
