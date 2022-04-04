@@ -1,15 +1,15 @@
 <h1 align="center">Telegram File Stream Bot</h3>
 <p align="center">
-  <a href="https://github.com/DeekshithSH/FileStreamBot">
-    <img src="https://socialify.git.ci/DeekshithSH/FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="FileStreamBot" width="640" height="320" />
+  <a href="https://github.com/DeekshithSH/TG-FileStreamBot">
+    <img src="https://socialify.git.ci/DeekshithSH/TG-FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="TG-FileStreamBot" width="640" height="320" />
   </a>
   <p align="center">
     A Telegram bot to stream files to web<br/>
     <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot (Not Available)»</strong></a>
     <br />
-    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
+    <a href="https://github.com/DeekshithSH/TG-FileStreamBot/issues">Report a Bug</a>
     |
-    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Request Feature</a>
+    <a href="https://github.com/DeekshithSH/TG-FileStreamBot/issues">Request Feature</a>
   </p>
 </p>
 
