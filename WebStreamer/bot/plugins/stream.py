@@ -2,7 +2,7 @@
 
 
 import asyncio
-import WebStreamer.utils.Translation as Translation
+from WebStreamer.utils.Translation import Language
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.database import Database
 from WebStreamer.utils.file_properties import gen_link
@@ -27,8 +27,8 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
     group=4,
 )
 async def private_receive_handler(c: Client, m: Message):
-    # lang = getattr(Translation, m.from_user.language_code)
-    lang = getattr(Translation, "en")
+    # lang = getattr(Language, m.from_user.language_code)
+    lang = getattr(Language, "en")
     # Check The User is Banned or Not
     if await db.is_user_banned(m.from_user.id):
         await c.send_message(

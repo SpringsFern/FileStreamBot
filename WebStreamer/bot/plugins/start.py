@@ -5,132 +5,18 @@ from urllib.parse import quote_plus
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.file_properties import gen_link, get_media_file_unique_id
 from WebStreamer.vars import Var
-from WebStreamer.utils.human_readable import humanbytes
 from WebStreamer.utils.database import Database
 from pyrogram import filters, Client
-import WebStreamer.utils.Translation as Translation
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
-from pyrogram.errors import UserNotParticipant, MessageDeleteForbidden
+from WebStreamer.utils.Translation import Language, BUTTON
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
-START_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')
-        ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
-        ]
-    )
-HELP_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
-        ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
-        ]
-    )
-ABOUT_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
-        ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
-        ]
-    )
-deldbtnmsg=["Your Already Deleted the Link", "You can't undo the Action", "You can Resend the File to Regenerate New Link", "Why Clicking me Your Link is Dead", "This is Just a Button Showing that Your Link is Deleted"]
-
-@StreamBot.on_callback_query()
-async def cb_data(bot, update: CallbackQuery):
-    # lang = getattr(Translation, update.from_user.language_code)
-    lang = getattr(Translation, "en")
-    if update.data == "home":
-        await update.message.edit_text(
-            text=lang.START_TEXT.format(update.from_user.mention),
-            disable_web_page_preview=True,
-            reply_markup=START_BUTTONS
-        )
-    elif update.data == "help":
-        await update.message.edit_text(
-            text=lang.HELP_TEXT,
-            disable_web_page_preview=True,
-            reply_markup=HELP_BUTTONS
-        )
-    elif update.data == "about":
-        await update.message.edit_text(
-            text=lang.ABOUT_TEXT,
-            disable_web_page_preview=True,
-            reply_markup=ABOUT_BUTTONS
-        )
-    elif update.data == "close":
-        await update.message.delete()
-    elif update.data == "msgdeleted":
-        await update.answer(random.choice(deldbtnmsg), show_alert=True)
-    else:
-        usr_cmd = update.data.split("_")
-        if usr_cmd[0] == "msgdelconf2":
-            await update.message.edit_text(
-            text=update.message.text,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✔️", callback_data=f"msgdelyes_{usr_cmd[1]}_{usr_cmd[2]}"), InlineKeyboardButton("✖️", callback_data=f"msgdelno_{usr_cmd[1]}_{usr_cmd[2]}")]])
-        )
-        elif usr_cmd[0] == "msgdelno":
-            get_msg = await bot.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(usr_cmd[1]))
-            if get_media_file_unique_id(get_msg) == usr_cmd[2]:
-                reply_markup, Stream_Text, stream_link = await gen_link(m=update, log_msg=get_msg, from_channel=False)
-
-                await update.message.edit_text(
-                text=Stream_Text,
-                disable_web_page_preview=True,
-                reply_markup=reply_markup
-                )
-            elif resp.empty:
-                await update.answer("Sorry Your File is Missing from the Server", show_alert=True)
-            else:
-                await update.answer("Message id and file_unique_id miss match", show_alert=True)
-        elif usr_cmd[0] == "msgdelyes":
-            try:
-                resp = await bot.get_messages(Var.BIN_CHANNEL, int(usr_cmd[1]))
-                if get_media_file_unique_id(resp) == usr_cmd[2]:
-                    await bot.delete_messages(
-                        chat_id=Var.BIN_CHANNEL,
-                        message_ids=int(usr_cmd[1])
-                    )
-                    await update.message.edit_text(
-                    text=update.message.text,
-                    disable_web_page_preview=True,
-                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Link Deleted", callback_data="msgdeleted")]])
-                    )
-                elif resp.empty:
-                    await update.answer("Sorry Your File is Missing from the Server", show_alert=True)
-                else:
-                    await update.answer("Message id and file_unique_id miss match", show_alert=True)
-            except MessageDeleteForbidden as e:
-                print(e)
-                await bot.send_message(
-                    chat_id=Var.BIN_CHANNEL,
-                    text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `{e}`\n#Delete_Link", disable_web_page_preview=True, parse_mode="Markdown",
-                )
-                await update.answer(text='message too old', show_alert=True)
-            except Exception as e:
-                print(e)
-                error_id=await bot.send_message(
-                    chat_id=Var.BIN_CHANNEL,
-                    text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `{e}`\n#Delete_Link", disable_web_page_preview=True, parse_mode="Markdown",
-                )
-                await update.message.reply_text(
-                    text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `message-id={error_id.message_id}`\nYou can get Help from [Public Link Generator (Support)](https://t.me/PublicLinkGenerator)", disable_web_page_preview=True, parse_mode="Markdown",
-                )
-        else:
-            await update.message.delete()
-
 @StreamBot.on_message(filters.command('start') & filters.private & ~filters.edited)
 async def start(b, m):
-    # lang = getattr(Translation, m.from_user.language_code)
-    lang = getattr(Translation, "en")
+    # lang = getattr(Language, m.from_user.language_code)
+    lang = getattr(Language, "en")
     # Check The User is Banned or Not
     if await db.is_user_banned(m.from_user.id):
         await b.send_message(
@@ -181,25 +67,25 @@ async def start(b, m):
         text=lang.START_TEXT.format(m.from_user.mention),
         parse_mode="HTML",
         disable_web_page_preview=True,
-        reply_markup=START_BUTTONS
+        reply_markup=BUTTON.START_BUTTONS
         )
 
 
 @StreamBot.on_message(filters.private & filters.command(["about"]))
 async def start(bot, update):
-    # lang = getattr(Translation, update.from_user.language_code)
-    lang = getattr(Translation, "en")
+    # lang = getattr(Language, update.from_user.language_code)
+    lang = getattr(Language, "en")
     await update.reply_text(
         text=lang.ABOUT_TEXT.format(update.from_user.mention),
         disable_web_page_preview=True,
-        reply_markup=ABOUT_BUTTONS
+        reply_markup=BUTTON.ABOUT_BUTTONS
     )
 
 
 @StreamBot.on_message((filters.command('help')) & filters.private & ~filters.edited)
 async def help_handler(bot, message):
-    # lang = getattr(Translation, message.from_user.language_code)
-    lang = getattr(Translation, "en")
+    # lang = getattr(Language, message.from_user.language_code)
+    lang = getattr(Language, "en")
     # Check The User is Banned or Not
     if await db.is_user_banned(message.from_user.id):
         await bot.send_message(
@@ -249,7 +135,7 @@ async def help_handler(bot, message):
         text=lang.HELP_TEXT,
         parse_mode="HTML",
         disable_web_page_preview=True,
-        reply_markup=HELP_BUTTONS
+        reply_markup=BUTTON.HELP_BUTTONS
         )
 
 # -----------------------------Only for me you can remove below line -------------------------------------------------------

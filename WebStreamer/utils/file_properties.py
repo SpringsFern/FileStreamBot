@@ -7,7 +7,7 @@ from pyrogram.types import Message
 from pyrogram.file_id import FileId
 from pyrogram.raw.types.messages import Messages
 from WebStreamer.server.exceptions import FIleNotFound
-import WebStreamer.utils.Translation as Translation
+from WebStreamer.utils.Translation import Language
 from WebStreamer.utils.human_readable import humanbytes
 from WebStreamer.vars import Var
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -77,8 +77,8 @@ def get_media_file_unique_id(m):
 # Generate Text, Stream Link, reply_markup
 async def gen_link(m: Message,log_msg: Messages, from_channel: bool):
     """Generate Text for Stream Link, Reply Text and reply_markup"""
-    # lang = getattr(Translation, message.from_user.language_code)
-    lang = getattr(Translation, "en")
+    # lang = getattr(Language, message.from_user.language_code)
+    lang = getattr(Language, "en")
     file_name = get_name(log_msg)
     file_size = humanbytes(get_media_file_size(log_msg))
     
