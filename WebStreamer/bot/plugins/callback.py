@@ -23,7 +23,7 @@ async def cb_data(bot, update: CallbackQuery):
         )
     elif update.data == "help":
         await update.message.edit_text(
-            text=lang.HELP_TEXT,
+            text=lang.HELP_TEXT.format(Var.UPDATES_CHANNEL),
             disable_web_page_preview=True,
             reply_markup=BUTTON.HELP_BUTTONS
         )
@@ -90,7 +90,7 @@ async def cb_data(bot, update: CallbackQuery):
                     text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `{e}`\n#Delete_Link", disable_web_page_preview=True, parse_mode="Markdown",
                 )
                 await update.message.reply_text(
-                    text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `message-id={error_id.message_id}`\nYou can get Help from [Public Link Generator (Support)](https://t.me/PublicLinkGenerator)", disable_web_page_preview=True, parse_mode="Markdown",
+                    text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `message-id={error_id.message_id}`\nYou can get Help from [Public Link Generator (Support)](https://t.me/{Var.UPDATES_CHANNEL})", disable_web_page_preview=True, parse_mode="Markdown",
                 )
         else:
             await update.message.delete()

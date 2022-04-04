@@ -46,7 +46,7 @@
 ## About This Bot
 
 <p align="center">
-    <a herf="https://github.com/DeekshithSH/FileStreamBot">
+    <a herf="https://github.com/DeekshithSH/TG-FileStreamBot">
         <img src="https://www.flaticon.com/premium-icon/icons/svg/2626/2626281.svg" height="100" width="100" alt="Telegram Logo">
     </a>
 </p>
@@ -73,7 +73,7 @@ then goto the <a href="#mandatory-vars">variables tab</a> for more info on setti
 ### Host it on VPS or Locally
 
 ```sh
-git clone https://github.com/DeekshithSH/FileStreamBot
+git clone https://github.com/DeekshithSH/TG-FileStreamBot
 cd FileStreamBot
 virtualenv -p /usr/bin/python3 venv
 . ./venv/bin/activate
@@ -95,7 +95,6 @@ API_ID=452525
 API_HASH=esx576f8738x883f3sfzx83
 BOT_TOKEN=55838383:yourtbottokenhere
 BIN_CHANNEL=-100
-MULTI_CLIENT=True
 MULTI_TOKEN1=55838383:yourfirstmulticlientbottokenhere
 MULTI_TOKEN2=55838383:yoursecondmulticlientbottokenhere
 MULTI_TOKEN3=55838383:yourthirdmulticlientbottokenhere
@@ -113,7 +112,7 @@ DATABASE_URL=mongodb_uri
 
 `BOT_TOKEN` : Get the bot token from [@BotFather](https://telegram.dog/BotFather)
 
-`BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `\id`. Now copy paste the forwarded channel ID in this field. 
+`BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `/id`. Now copy paste the forwarded channel ID in this field. 
 
 `OWNER_ID` : Your Telegram User ID
 

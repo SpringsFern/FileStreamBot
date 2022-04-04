@@ -59,7 +59,7 @@ async def start(b, m):
         except Exception:
             await b.send_message(
                 chat_id=m.chat.id,
-                text="<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/PublicLinkGenerator'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
+                text=f"<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/{Var.UPDATES_CHANNEL}'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
                 parse_mode="HTML",
                 disable_web_page_preview=True)
             return
@@ -127,12 +127,12 @@ async def help_handler(bot, message):
         except Exception:
             await bot.send_message(
                 chat_id=message.chat.id,
-                text="__Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ__ [ ᴄʟɪᴄᴋ ʜᴇʀᴇ ](https://t.me/PublicLinkGenerator).",
+                text=f"__Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ__ [ ᴄʟɪᴄᴋ ʜᴇʀᴇ ](https://t.me/{Var.UPDATES_CHANNEL}).",
                 parse_mode="markdown",
                 disable_web_page_preview=True)
             return
     await message.reply_text(
-        text=lang.HELP_TEXT,
+        text=lang.HELP_TEXT.format(Var.UPDATES_CHANNEL),
         parse_mode="HTML",
         disable_web_page_preview=True,
         reply_markup=BUTTON.HELP_BUTTONS
