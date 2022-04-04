@@ -118,3 +118,4 @@ dmypy.json
 *.session-journal
 .env
 test.py
+test2.py
