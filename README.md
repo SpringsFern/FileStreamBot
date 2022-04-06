@@ -1,15 +1,16 @@
 <h1 align="center">Telegram File Stream Bot</h3>
 <p align="center">
-  <a href="https://github.com/DeekshithSH/TG-FileStreamBot">
-    <img src="https://socialify.git.ci/DeekshithSH/TG-FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="TG-FileStreamBot" width="640" height="320" />
+  <a href="https://github.com/DeekshithSH/FileStreamBot">
+    <img src="https://socialify.git.ci/DeekshithSH/FileStreamBot/image?description=1&font=Source%20Code%20Pro&forks=1&issues=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Dark" alt="FileStreamBot" width="640" height="320" />
   </a>
   <p align="center">
     A Telegram bot to stream files to web<br/>
+    <a href="https://github.com/DeekshithSH/FileStreamBot">Repository Moved</a>
     <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot (Not Available)»</strong></a>
     <br />
-    <a href="https://github.com/DeekshithSH/TG-FileStreamBot/issues">Report a Bug</a>
+    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
     |
-    <a href="https://github.com/DeekshithSH/TG-FileStreamBot/issues">Request Feature</a>
+    <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Request Feature</a>
   </p>
 </p>
 
@@ -46,7 +47,7 @@
 ## About This Bot
 
 <p align="center">
-    <a herf="https://github.com/DeekshithSH/TG-FileStreamBot">
+    <a herf="https://github.com/DeekshithSH/FileStreamBot">
         <img src="https://www.flaticon.com/premium-icon/icons/svg/2626/2626281.svg" height="100" width="100" alt="Telegram Logo">
     </a>
 </p>
@@ -73,7 +74,7 @@ then goto the <a href="#mandatory-vars">variables tab</a> for more info on setti
 ### Host it on VPS or Locally
 
 ```sh
-git clone https://github.com/DeekshithSH/TG-FileStreamBot
+git clone https://github.com/DeekshithSH/FileStreamBot
 cd FileStreamBot
 virtualenv -p /usr/bin/python3 venv
 . ./venv/bin/activate
@@ -179,7 +180,7 @@ You can contact either via my [Telegram Group](https://xn--r1a.click/AWeirdStrin
 ## Credits
 
 - [Me](https://xn--r1a.click/DeekshithSH)
-- [EverythingSuckz](https://github.com/EverythingSuckz) for his [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot)
+- [EverythingSuckz](https://github.com/EverythingSuckz) for his [FileStreamBot](https://github.com/EverythingSuckz/FileStreamBot)
 - [Avishkar Patil](https://github.com/avipatilpro) for his [FileStreamBot](https://github.com/avipatilpro/FileStreamBot)
 - [eyaadh](https://github.com/eyaadh) for his awesome [Megatron Bot](https://github.com/eyaadh/megadlbot_oss).
 - [BlackStone](https://github.com/eyMarv) for adding multi-client support.

@@ -11,7 +11,7 @@
         "modular",
         "media"
       ],
-    "repository": "https://github.com/DeekshithSH/TG-FileStreamBot",
+    "repository": "https://github.com/DeekshithSH/FileStreamBot",
     "success_url": "/",
     "website": "ftl.deekshith.eu.org",
     "env": {
