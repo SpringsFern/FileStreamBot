@@ -9,7 +9,6 @@ from . import multi_clients, work_loads, StreamBot
 
 
 async def initialize_clients():
-    SESSION_STRING_SIZE = 351
     multi_clients[0] = StreamBot
     work_loads[0] = 0
     all_tokens = TokenParser().parse_from_env()
@@ -19,24 +18,26 @@ async def initialize_clients():
     
     async def start_client(client_id, token):
         try:
-            if len(token) >= 351:
-                session_name=token
+            if len(token) >= 100:
+                session_string=token
                 bot_token=None
-                print(f"Starting - Client {client_id} using Session Strings")
+                print(f'Starting Client - {client_id} Using Session String')
             else:
-                session_name=":memory:"
+                session_string=None
                 bot_token=token
-                print(f"Starting - Client {client_id} using Bot Token")
+                print(f'Starting Client - {client_id} Using Bot Token')
             if client_id == len(all_tokens):
                 await asyncio.sleep(2)
                 print("This will take some time, please wait...")
             client = await Client(
-                session_name=session_name,
+                name=str(client_id),
                 api_id=Var.API_ID,
                 api_hash=Var.API_HASH,
                 bot_token=bot_token,
                 sleep_threshold=Var.SLEEP_THRESHOLD,
                 no_updates=True,
+                session_string=session_string,
+                in_memory=True,
             ).start()
             work_loads[client_id] = 0
             return client_id, client
