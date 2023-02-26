@@ -1,9 +1,9 @@
 # This file is a part of FileStreamBot
 
+from WebStreamer import utils
 from WebStreamer.vars import Var
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.human_readable import humanbytes
-from WebStreamer.utils.file_properties import get_file_ids
 from WebStreamer.server.exceptions import InvalidHash
 import urllib.parse
 import aiofiles
@@ -12,7 +12,7 @@ import aiohttp
 
 
 async def render_page(message_id, secure_hash):
-    file_data=await get_file_ids(StreamBot, int(Var.BIN_CHANNEL), int(message_id))
+    file_data=await utils.get_file_ids(StreamBot, int(Var.BIN_CHANNEL), int(message_id))
     if file_data.unique_id[:6] != secure_hash:
         logging.debug(f'link hash: {secure_hash} - {file_data.unique_id[:6]}')
         logging.debug(f"Invalid hash for message with - ID {message_id}")

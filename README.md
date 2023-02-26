@@ -5,7 +5,6 @@
   </a>
   <p align="center">
     A Telegram bot to stream files to web<br/>
-    <a href="https://github.com/DeekshithSH/FileStreamBot">Repository Moved</a>
     <a href="https://telegram.dog/DirectLinkGenerator_Bot"><strong>Demo Bot (Not Available)»</strong></a>
     <br />
     <a href="https://github.com/DeekshithSH/FileStreamBot/issues">Report a Bug</a>
@@ -28,7 +27,6 @@
     <li>
       <a href="#how-to-make-your-own">How to make your own</a>
       <ul>
-        <li><a href="#deploy-on-heroku">Deploy using Heroku</a></li>
         <li><a href="#host-it-on-vps-or-locally">Run it in a VPS / local</a></li>
       </ul>
     </li>
@@ -61,29 +59,30 @@ The main working part was taken from [Megatron](https://github.com/eyaadh/megadl
 
 ## How to make your own
 
-Either you could locally host or deploy on [Heroku](https://heroku.com)
-
-### Deploy on Heroku
-
-Press the below button to fast deploy to Heroku
-
-- [![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-then goto the <a href="#mandatory-vars">variables tab</a> for more info on setting up environmental variables.
+<!-- Host the bot on VPS or Locally -->
 
 ### Host it on VPS or Locally
 
 ```sh
 git clone https://github.com/DeekshithSH/FileStreamBot
 cd FileStreamBot
-virtualenv -p /usr/bin/python3 venv
+python3 -m venv ./venv
 . ./venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 python3 -m WebStreamer
 ```
 
 and to stop the whole bot,
  do <kbd>CTRL</kbd>+<kbd>C</kbd>
+
+- **If you wanna run this bot 24/7 on the VPS, follow these steps.**
+```sh
+sudo apt install tmux -y
+tmux
+python3 -m WebStreamer
+```
+
+now you can close the VPS and the bot will run on it.
 
 ## Setting up things
 

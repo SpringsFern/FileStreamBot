@@ -28,8 +28,7 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
     group=4,
 )
 async def private_receive_handler(c: Client, m: Message):
-    # lang = getattr(Language, m.from_user.language_code)
-    lang = getattr(Language, "en")
+    lang = Language(m)
     # Check The User is Banned or Not
     if await db.is_user_banned(m.from_user.id):
         await c.send_message(

@@ -13,8 +13,7 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
 @StreamBot.on_message(filters.command('start') & filters.private)
 async def start(b, m):
-    # lang = getattr(Language, m.from_user.language_code)
-    lang = getattr(Language, "en")
+    lang = Language(m)
     # Check The User is Banned or Not
     if await db.is_user_banned(m.from_user.id):
         await b.send_message(
@@ -71,8 +70,7 @@ async def start(b, m):
 
 @StreamBot.on_message(filters.private & filters.command(["about"]))
 async def start(bot, update):
-    # lang = getattr(Language, update.from_user.language_code)
-    lang = getattr(Language, "en")
+    lang = Language(update)
     await update.reply_text(
         text=lang.ABOUT_TEXT.format(update.from_user.mention),
         disable_web_page_preview=True,
@@ -82,8 +80,7 @@ async def start(bot, update):
 
 @StreamBot.on_message((filters.command('help')) & filters.private)
 async def help_handler(bot, message):
-    # lang = getattr(Language, message.from_user.language_code)
-    lang = getattr(Language, "en")
+    lang = Language(message)
     # Check The User is Banned or Not
     if await db.is_user_banned(message.from_user.id):
         await bot.send_message(

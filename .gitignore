@@ -116,6 +116,9 @@ dmypy.json
 #session files
 *.session
 *.session-journal
+
 .env
 test.py
 test2.py
+
+streambot.log.*

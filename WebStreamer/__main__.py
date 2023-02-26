@@ -3,6 +3,7 @@
 import sys
 import asyncio
 import logging
+import logging.handlers as handlers
 from .vars import Var
 from aiohttp import web
 from pyrogram import idle
@@ -17,7 +18,7 @@ logging.basicConfig(
     datefmt="%d/%m/%Y %H:%M:%S",
     format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(stream=sys.stdout),
-              logging.FileHandler("streambot.log", mode="a", encoding="utf-8")],)
+              handlers.RotatingFileHandler("streambot.log", mode="a", maxBytes=104857600, backupCount=2, encoding="utf-8")],)
 
 logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
@@ -25,11 +26,11 @@ logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
 server = web.AppRunner(web_server())
 
-if sys.version_info[1] > 9:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-else:
-    loop = asyncio.get_event_loop()
+#if sys.version_info[1] > 9:
+#    loop = asyncio.new_event_loop()
+#    asyncio.set_event_loop(loop)
+#else:
+loop = asyncio.get_event_loop()
 
 async def start_services():
     print()
@@ -44,23 +45,20 @@ async def start_services():
     )
     await initialize_clients()
     print("------------------------------ DONE ------------------------------")
-    if Var.ON_HEROKU:
+    if Var.KEEP_ALIVE:
         print("------------------ Starting Keep Alive Service ------------------")
         print()
         asyncio.create_task(utils.ping_server())
-    print("--------------------- Initalizing Web Server ---------------------")
+    print("--------------------- Initializing Web Server ---------------------")
     await server.setup()
-    bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADDRESS
-    await web.TCPSite(server, bind_address, Var.PORT).start()
+    await web.TCPSite(server, Var.BIND_ADDRESS, Var.PORT).start()
     print("------------------------------ DONE ------------------------------")
     print()
     print("------------------------- Service Started -------------------------")
     print("                        bot =>> {}".format(bot_info.first_name))
     if bot_info.dc_id:
         print("                        DC ID =>> {}".format(str(bot_info.dc_id)))
-    print("                        server ip =>> {}".format(bind_address, Var.PORT))
-    if Var.ON_HEROKU:
-        print("                        app running on =>> {}".format(Var.FQDN))
+    print(" URL =>> {}".format(Var.URL))
     print("------------------------------------------------------------------")
     await idle()
 
