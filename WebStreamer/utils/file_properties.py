@@ -101,6 +101,18 @@ def get_media_file_unique_id(m):
     media = get_media_from_message(m)
     return getattr(media, "file_unique_id", "")
 
+def get_file_info(log_msg, message):
+    media = get_media_from_message(log_msg)
+    return {
+            "user_id": message.from_user.id,
+            "msg_id":log_msg.id,
+            "file_id": getattr(media, "file_id", ""),
+            "file_unique_id":getattr(media, "file_unique_id", ""),
+            "file_name": get_name(log_msg),
+            "file_size":getattr(media, "file_size", 0),
+            "mime_type": getattr(media, "mime_type", "None/unknown")
+        }
+
 # Generate Text, Stream Link, reply_markup
 async def gen_link(m: Message,log_msg: Messages, from_channel: bool):
     """Generate Text for Stream Link, Reply Text and reply_markup"""
@@ -114,8 +126,7 @@ async def gen_link(m: Message,log_msg: Messages, from_channel: bool):
     Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
     reply_markup=InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)],
-            [InlineKeyboardButton("❌ Delete Link", callback_data=f"msgdelconf2_{log_msg.id}_{get_media_file_unique_id(log_msg)}")]
+            [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]
             ]
         )
 

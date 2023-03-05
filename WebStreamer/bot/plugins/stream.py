@@ -5,7 +5,7 @@ import asyncio
 from WebStreamer.utils.Translation import Language
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.database import Database
-from WebStreamer.utils.file_properties import gen_link
+from WebStreamer.utils.file_properties import gen_link, get_file_info
 from WebStreamer.vars import Var
 from pyrogram import filters, Client
 from pyrogram.errors import FloodWait, UserNotParticipant
@@ -77,7 +77,7 @@ async def private_receive_handler(c: Client, m: Message):
         log_msg = await m.forward(chat_id=Var.BIN_CHANNEL)
         reply_markup, Stream_Text, stream_link = await gen_link(m=m, log_msg=log_msg, from_channel=False)
         await log_msg.reply_text(text=f"**RᴇQᴜᴇꜱᴛᴇᴅ ʙʏ :** [{m.from_user.first_name}](tg://user?id={m.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{m.from_user.id}`\n**Dᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ :** {stream_link}", disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN, quote=True)
-
+        await db.add_file(get_file_info(log_msg,m))
         await m.reply_text(
             text=Stream_Text,
             parse_mode=ParseMode.HTML,

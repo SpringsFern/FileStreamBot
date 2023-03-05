@@ -10,6 +10,7 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.black = self.db.blacklist
+        self.file = self.db.file
 
 # ----------------------add ,check or remove user----------------------
     def new_user(self, id):
@@ -58,3 +59,8 @@ class Database:
     async def total_banned_users_count(self):
         count = await self.black.count_documents({})
         return count
+        
+# --------------------------------------------------------
+    async def add_file(self, file_info):
+        file_info["time"]=datetime.date.today().isoformat()
+        await self.file.insert_one(file_info)
