@@ -95,13 +95,14 @@ API_ID=452525
 API_HASH=esx576f8738x883f3sfzx83
 BOT_TOKEN=55838383:yourtbottokenhere
 BIN_CHANNEL=-100
+DATABASE_URL=mongodb://admin:pAswaRd@192.168.27.1
+FQDN=192.168.27.1
+HAS_SSL=False
 MULTI_TOKEN1=55838383:yourfirstmulticlientbottokenhere
 MULTI_TOKEN2=55838383:yoursecondmulticlientbottokenhere
 MULTI_TOKEN3=55838383:yourthirdmulticlientbottokenhere
+OWNER_ID=777000
 PORT=8080
-FQDN=yourserverip
-HAS_SSL=False
-DATABASE_URL=mongodb_uri
 ```
 
 ### Mandatory Vars
@@ -114,7 +115,7 @@ DATABASE_URL=mongodb_uri
 
 `BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `/id`. Now copy paste the forwarded channel ID in this field. 
 
-`OWNER_ID` : Your Telegram User ID
+`OWNER_ID` : Your Telegram User ID, Send `/id` to [@missrose_bot](https://telegram.dog/MissRose_bot) to get Your Telegram User ID
 
 `DATABASE_URL` : MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in [Me Telegram](https://t.me/Avishkarpatil).
 
@@ -147,9 +148,15 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `PING_INTERVAL` : The time in ms you want the servers to be pinged each time to avoid sleeping (Only for Heroku). Defaults to `1200` or 20 minutes.
 
-`UPDATES_CHANNEL` : Update Channel shown with Start Text
+`UPDATES_CHANNEL` : Your Telegram Channel
 
 `FORCE_UPDATES_CHANNEL` : Set to True, so every user have to Join update channel to use the bot.
+
+`SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
+
+`BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
+
+`KEEP_ALIVE` : If you want to make the server ping itself every `PING_INTERVAL` seconds to avoid sleeping. Helpful in PaaS Free tiers. Defaults to `False`
 
 ## How to use the bot
 
