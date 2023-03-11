@@ -5,7 +5,7 @@ from WebStreamer.vars import Var
 from WebStreamer.utils.database import Database
 from pyrogram import filters, Client
 from WebStreamer.utils.Translation import Language, BUTTON
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums.parse_mode import ParseMode
 
@@ -141,3 +141,23 @@ async def start(b, m):
         chat_id=m.chat.id,
         text=f"Your ID is: `{m.chat.id}`"
     )
+
+@StreamBot.on_message(filters.command('myfiles') & filters.private)
+async def my_files(b: Client, m: Message):
+    user_files, total_files=await db.find_files(m.from_user.id, [1,10])
+
+    file_list=[]
+    async for x in user_files:
+        file_list.append([InlineKeyboardButton(x["file_name"], callback_data=f"myfile_{x['_id']}_{1}")])
+    if total_files > 10:
+        file_list.append(
+            [
+                InlineKeyboardButton("<<", callback_data="N/A"),
+                InlineKeyboardButton("1", callback_data="N/A"),
+                InlineKeyboardButton(">>", callback_data="userfiles_2")
+            ]
+    )
+    await m.reply_photo(photo="AgACAgUAAx0EahoMtgACATdkDMgj7iA-TAc1s3yLlq91otyCwQAC7bQxG_qwaFQdD9chrgKdSAAIAQADAgADeAAHHgQ",
+        caption="Total files: {}".format(total_files),
+        reply_markup=InlineKeyboardMarkup(file_list))
+    

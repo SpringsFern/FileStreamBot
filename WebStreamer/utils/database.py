@@ -2,6 +2,7 @@
 
 import datetime
 import motor.motor_asyncio
+from bson.objectid import ObjectId
 
 
 class Database:
@@ -64,3 +65,14 @@ class Database:
     async def add_file(self, file_info):
         file_info["time"]=datetime.date.today().isoformat()
         await self.file.insert_one(file_info)
+
+    async def find_files(self, user_id, range):
+        user_files=self.file.find({"user_id": user_id})
+        user_files.skip(range[0] - 1)
+        user_files.limit(range[1] - range[0] + 1)
+        total_files = await self.file.count_documents({"user_id": user_id})
+        return user_files, total_files
+
+    async def get_file(self, _id):
+        file_info=await self.file.find_one({"_id": ObjectId(_id)})
+        return file_info
