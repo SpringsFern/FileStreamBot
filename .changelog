@@ -1,13 +1,2 @@
-- Fixed Bot not working in Channel
-- Removed files related to Heroku
-- Switched to Rotating Logs
-
-Updated Changes Made in EverythingSuckz's repo
-- README: update VPS deployment commands
-- Fix stream seeking
-- Fix bugs in stream seeking
-- Fix last_part_cut
-- REFACTOR: token parser
-- chore: remove heroku stuffs
-- Fix for files without filename
-- Fixed download with weird file name
+* Changed Download Link Path
+* Using DataBase to Store File

@@ -46,6 +46,7 @@ async def initialize_clients():
                 session_string=session_string,
                 in_memory=True,
             ).start()
+            client.id = (await client.get_me()).id
             work_loads[client_id] = 0
             return client_id, client
         except Exception:

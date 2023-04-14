@@ -32,33 +32,32 @@ class ByteStreamer:
         """
         self.clean_timer = 30 * 60
         self.client: Client = client
-        self.cached_file_ids: Dict[int, FileId] = {}
+        self.cached_file_ids: Dict[str, FileId] = {}
         asyncio.create_task(self.clean_cache())
 
-    async def get_file_properties(self, message_id: int) -> FileId:
+    async def get_file_properties(self, db_id: str, multi_clients) -> FileId:
         """
         Returns the properties of a media of a specific message in a FIleId class.
         if the properties are cached, then it'll return the cached results.
         or it'll generate the properties from the Message ID and cache them.
         """
-        if message_id not in self.cached_file_ids:
-            await self.generate_file_properties(message_id)
-            logging.debug(f"Cached file properties for message with ID {message_id}")
-        return self.cached_file_ids[message_id]
+        if not db_id in self.cached_file_ids:
+            logging.debug("Before Calling generate_file_properties")
+            await self.generate_file_properties(db_id, multi_clients)
+            logging.debug(f"Cached file properties for file with ID {db_id}")
+        return self.cached_file_ids[db_id]
     
-    async def generate_file_properties(self, message_id: int) -> FileId:
+    async def generate_file_properties(self, db_id: str, multi_clients) -> FileId:
         """
         Generates the properties of a media file on a specific message.
         returns ths properties in a FIleId class.
         """
-        file_id = await get_file_ids(self.client, Var.BIN_CHANNEL, message_id)
-        logging.debug(f"Generated file ID and Unique ID for message with ID {message_id}")
-        if not file_id:
-            logging.debug(f"Message with ID {message_id} not found")
-            raise FIleNotFound
-        self.cached_file_ids[message_id] = file_id
-        logging.debug(f"Cached media message with ID {message_id}")
-        return self.cached_file_ids[message_id]
+        logging.debug("Before calling get_file_ids")
+        file_id = await get_file_ids(self.client, db_id, multi_clients)
+        logging.debug(f"Generated file ID and Unique ID for file with ID {db_id}")
+        self.cached_file_ids[db_id] = file_id
+        logging.debug(f"Cached media file with ID {db_id}")
+        return self.cached_file_ids[db_id]
 
     async def generate_media_session(self, client: Client, file_id: FileId) -> Session:
         """

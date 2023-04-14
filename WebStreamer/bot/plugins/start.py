@@ -1,5 +1,6 @@
 # This file is a part of FileStreamBot
 
+import math
 from WebStreamer.bot import StreamBot
 from WebStreamer.vars import Var
 from WebStreamer.utils.database import Database
@@ -153,11 +154,11 @@ async def my_files(b: Client, m: Message):
         file_list.append(
             [
                 InlineKeyboardButton("<<", callback_data="N/A"),
-                InlineKeyboardButton("1", callback_data="N/A"),
+                InlineKeyboardButton(f"1/{math.ceil(total_files/10)}", callback_data="N/A"),
                 InlineKeyboardButton(">>", callback_data="userfiles_2")
             ]
     )
-    await m.reply_photo(photo="AgACAgUAAx0EahoMtgACATdkDMgj7iA-TAc1s3yLlq91otyCwQAC7bQxG_qwaFQdD9chrgKdSAAIAQADAgADeAAHHgQ",
+    await m.reply_photo(photo=Var.IMAGE_FILEID,
         caption="Total files: {}".format(total_files),
         reply_markup=InlineKeyboardMarkup(file_list))
     

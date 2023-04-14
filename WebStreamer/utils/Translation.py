@@ -111,3 +111,10 @@ class BUTTON(object):
         [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     )
+
+class Data:
+    generate_single_button = [
+        InlineKeyboardButton("🔥 sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴇssɪᴏɴ 🔥", callback_data="generate")
+    ]
+
+    generate_button = [generate_single_button]

@@ -37,6 +37,7 @@ async def start_services():
     print("-------------------- Initializing Telegram Bot --------------------")
     await StreamBot.start()
     bot_info = await StreamBot.get_me()
+    StreamBot.id = bot_info.id
     StreamBot.username = bot_info.username
     print("------------------------------ DONE ------------------------------")
     print()

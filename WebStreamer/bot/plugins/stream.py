@@ -74,10 +74,8 @@ async def private_receive_handler(c: Client, m: Message):
             return
 
     try:
-        log_msg = await m.forward(chat_id=Var.BIN_CHANNEL)
-        reply_markup, Stream_Text, stream_link = await gen_link(m=m, log_msg=log_msg, from_channel=False)
-        await log_msg.reply_text(text=f"**RᴇQᴜᴇꜱᴛᴇᴅ ʙʏ :** [{m.from_user.first_name}](tg://user?id={m.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{m.from_user.id}`\n**Dᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ :** {stream_link}", disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN, quote=True)
-        await db.add_file(get_file_info(log_msg,m))
+        inserted_id=await db.add_file(get_file_info(m))
+        reply_markup, Stream_Text, stream_link = await gen_link(m=m, from_channel=False, _id=inserted_id)
         await m.reply_text(
             text=Stream_Text,
             parse_mode=ParseMode.HTML,
@@ -96,8 +94,8 @@ async def channel_receive_handler(bot, broadcast: Message):
         await bot.leave_chat(broadcast.chat.id)
         return
     try:
-        log_msg = await broadcast.forward(chat_id=Var.BIN_CHANNEL)
-        stream_link = "{}{}{}".format(Var.URL, get_hash(log_msg), log_msg.id)
+        log_msg = await broadcast.copy(chat_id=Var.BIN_CHANNEL)
+        stream_link = "{}dl/{}{}".format(Var.URL, get_hash(log_msg), log_msg.id)
         await log_msg.reply_text(
             text=f"**Cʜᴀɴɴᴇʟ Nᴀᴍᴇ:** `{broadcast.chat.title}`\n**Cʜᴀɴɴᴇʟ ID:** `{broadcast.chat.id}`\n**Rᴇǫᴜᴇsᴛ ᴜʀʟ:** https://t.me/{(await bot.get_me()).username}?start=msgid_{str(log_msg.id)}",
             # text=f"**Cʜᴀɴɴᴇʟ Nᴀᴍᴇ:** `{broadcast.chat.title}`\n**Cʜᴀɴɴᴇʟ ID:** `{broadcast.chat.id}`\n**Rᴇǫᴜᴇsᴛ ᴜʀʟ:** https://t.me/FxStreamBot?start=msgid_{str(log_msg.id)}",

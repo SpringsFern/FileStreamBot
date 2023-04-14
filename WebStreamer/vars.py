@@ -35,3 +35,4 @@ class Var(object):
 
     BANNED_CHANNELS = list(set(int(x) for x in str(environ.get("BANNED_CHANNELS", "-1001296894100")).split()))
     KEEP_ALIVE = str(environ.get("KEEP_ALIVE", "0").lower()) in  ("1", "true", "t", "yes", "y")
+    IMAGE_FILEID=environ.get('IMAGE_FILEID', "https://deekshith.eu.org/static/MyFiles.png")

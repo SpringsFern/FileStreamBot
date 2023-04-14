@@ -1,9 +1,11 @@
 # This file is a part of FileStreamBot
 
-import datetime
+import pymongo
+import time
 import motor.motor_asyncio
 from bson.objectid import ObjectId
-
+from bson.errors import InvalidId
+from WebStreamer.server.exceptions import FIleNotFound
 
 class Database:
     def __init__(self, uri, database_name):
@@ -17,7 +19,7 @@ class Database:
     def new_user(self, id):
         return dict(
             id=id,
-            join_date=datetime.date.today().isoformat()
+            join_date=time.time()
         )
 
     async def add_user(self, id):
@@ -43,7 +45,7 @@ class Database:
     def black_user(self, id):
         return dict(
             id=id,
-            ban_date=datetime.date.today().isoformat()
+            ban_date=time.time()
         )
 
     async def ban_user(self, id):
@@ -63,16 +65,28 @@ class Database:
         
 # --------------------------------------------------------
     async def add_file(self, file_info):
-        file_info["time"]=datetime.date.today().isoformat()
-        await self.file.insert_one(file_info)
+        file_info["time"]=time.time()
+        return (await self.file.insert_one(file_info)).inserted_id
 
     async def find_files(self, user_id, range):
         user_files=self.file.find({"user_id": user_id})
         user_files.skip(range[0] - 1)
         user_files.limit(range[1] - range[0] + 1)
+        user_files.sort('_id', pymongo.DESCENDING)
         total_files = await self.file.count_documents({"user_id": user_id})
         return user_files, total_files
 
     async def get_file(self, _id):
-        file_info=await self.file.find_one({"_id": ObjectId(_id)})
-        return file_info
+        try:
+            file_info=await self.file.find_one({"_id": ObjectId(_id)})
+            if not file_info:
+                raise FIleNotFound
+            return file_info
+        except InvalidId:
+            raise FIleNotFound
+
+    async def delete_one_file(self, _id):
+        await self.file.delete_one({'_id': ObjectId(_id)})
+
+    async def update_file_ids(self, _id, file_ids: dict):
+        await self.file.update_one({"_id": ObjectId(_id)}, {"$set": {"file_ids": file_ids}})
