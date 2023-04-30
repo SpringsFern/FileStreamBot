@@ -7,24 +7,9 @@ from pyrogram import Client
 from typing import Any, Optional
 from pyrogram.types import Message
 from pyrogram.file_id import FileId
-from pyrogram.raw.types.messages import Messages
-from WebStreamer.server.exceptions import FIleNotFound
-from WebStreamer.utils.Translation import Language
-from WebStreamer.utils.human_readable import humanbytes
 from WebStreamer.utils.database import Database
 from WebStreamer.vars import Var
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
-
-async def parse_file_id(message: "Message") -> Optional[FileId]:
-    media = get_media_from_message(message)
-    if media:
-        return FileId.decode(media.file_id)
-
-async def parse_file_unique_id(message: "Messages") -> Optional[str]:
-    media = get_media_from_message(message)
-    if media:
-        return media.file_unique_id
 
 async def get_file_ids(client: Client, db_id: str, multi_clients) -> Optional[FileId]:
     logging.debug("Starting of get_file_ids")
@@ -45,8 +30,7 @@ async def get_file_ids(client: Client, db_id: str, multi_clients) -> Optional[Fi
         file_id_info[str(client.id)]=getattr(media, "file_id", "")
         await db.update_file_ids(db_id, file_id_info)
         logging.debug("Stored file_id in DB")
-    # if message.empty:
-    #     raise FIleNotFound
+
     logging.debug("Middle of get_file_ids")
     file_id = FileId.decode(file_id_info[str(client.id)])
     setattr(file_id, "file_size", file_info['file_size'])
@@ -72,10 +56,6 @@ def get_media_from_message(message: "Message") -> Any:
         if media:
             return media
 
-
-def get_hash(media_msg: Message) -> str:
-    media = get_media_from_message(media_msg)
-    return getattr(media, "file_unique_id", "")[:6]
 
 def get_media_file_size(m):
     media = get_media_from_message(m)
@@ -112,14 +92,6 @@ def get_name(media_msg: Message | FileId) -> str:
 
     return file_name
 
-def get_media_mime_type(m):
-    media = get_media_from_message(m)
-    return getattr(media, "mime_type", "None/unknown")
-
-def get_media_file_unique_id(m):
-    media = get_media_from_message(m)
-    return getattr(media, "file_unique_id", "")
-
 def get_file_info(message):
     media = get_media_from_message(message)
     return {
@@ -130,25 +102,6 @@ def get_file_info(message):
             "file_size":getattr(media, "file_size", 0),
             "mime_type": getattr(media, "mime_type", "None/unknown")
         }
-
-# Generate Text, Stream Link, reply_markup
-async def gen_link(m: Message, from_channel: bool, _id):
-    """Generate Text for Stream Link, Reply Text and reply_markup"""
-    # lang = getattr(Language, message.from_user.language_code)
-    lang = Language(m)
-    file_name = get_name(m)
-    file_size = humanbytes(get_media_file_size(m))
-    page_link = f"{Var.URL}watch/{_id}"
-    
-    stream_link = f"{Var.URL}dl/{_id}"
-    Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
-    reply_markup=InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]
-            ]
-        )
-
-    return reply_markup, Stream_Text, stream_link
 
 async def update_file_id(msg_id, multi_clients):
     file_ids={}

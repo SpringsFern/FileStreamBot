@@ -3,67 +3,32 @@
 import math
 from WebStreamer import __version__
 from WebStreamer.bot import StreamBot
+from WebStreamer.utils.bot_utils import is_user_accepted_tos, is_user_banned, is_user_exist, is_user_joined
 from WebStreamer.vars import Var
 from WebStreamer.utils.database import Database
 from WebStreamer.utils.Translation import Language, BUTTON
 from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from pyrogram.errors import UserNotParticipant
 from pyrogram.enums.parse_mode import ParseMode
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
 @StreamBot.on_message(filters.command('start') & filters.private)
-async def start(b, m):
-    lang = Language(m)
+async def start(bot, message):
+    lang = Language(message)
     # Check The User is Banned or Not
-    if await db.is_user_banned(m.from_user.id):
-        await b.send_message(
-                chat_id=m.chat.id,
-                text=lang.ban_text.format(Var.OWNER_ID),
-                parse_mode=ParseMode.MARKDOWN,
-                disable_web_page_preview=True
-            )
+    if await is_user_banned(message, lang):
         return
-    if not await db.is_user_exist(m.from_user.id):
-        await db.add_user(m.from_user.id)
-        await b.send_message(
-            Var.BIN_CHANNEL,
-            f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{m.from_user.first_name}](tg://user?id={m.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
-        )
-    usr_cmd = m.text.split("_")[-1]
+    await is_user_exist(bot, message)
+    if Var.TOS:
+        if not await is_user_accepted_tos(message):
+            return
+    # usr_cmd = message.text.split("_")[-1]
     if Var.FORCE_UPDATES_CHANNEL:
-        try:
-            user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
-            if user.status == "kicked":
-                await b.send_message(
-                    chat_id=m.chat.id,
-                    text=lang.ban_text.format(Var.OWNER_ID),
-                    parse_mode=ParseMode.MARKDOWN,
-                    disable_web_page_preview=True
-                )
-                return
-        except UserNotParticipant:
-            await b.send_message(
-                chat_id=m.chat.id,
-                text="<i>Jᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴍᴇ 🔐</i>",
-                reply_markup=InlineKeyboardMarkup(
-                    [[
-                        InlineKeyboardButton("Jᴏɪɴ ɴᴏᴡ 🔓", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
-                        ]]
-                ),
-                parse_mode=ParseMode.HTML
-            )
+        if not is_user_joined(bot,message,lang):
             return
-        except Exception:
-            await b.send_message(
-                chat_id=m.chat.id,
-                text=f"<i>Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/{Var.UPDATES_CHANNEL}'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
-                parse_mode=ParseMode.HTML,
-                disable_web_page_preview=True)
-            return
-    await m.reply_text(
-        text=lang.START_TEXT.format(m.from_user.mention),
+    await message.reply_text(
+        text=lang.START_TEXT.format(message.from_user.mention),
         parse_mode=ParseMode.HTML,
         disable_web_page_preview=True,
         reply_markup=BUTTON.START_BUTTONS
@@ -71,9 +36,18 @@ async def start(b, m):
 
 
 @StreamBot.on_message(filters.private & filters.command(["about"]))
-async def start(bot, update):
-    lang = Language(update)
-    await update.reply_text(
+async def start(bot, message):
+    lang = Language(message)
+    if await is_user_banned(message, lang):
+        return
+    await is_user_exist(bot, message)
+    if Var.TOS:
+        if not await is_user_accepted_tos(message):
+            return
+    if Var.FORCE_UPDATES_CHANNEL:
+        if not await is_user_joined(bot,message,lang):
+            return
+    await message.reply_text(
         text=lang.ABOUT_TEXT.format(__version__),
         disable_web_page_preview=True,
         reply_markup=BUTTON.ABOUT_BUTTONS
@@ -84,49 +58,14 @@ async def start(bot, update):
 async def help_handler(bot, message):
     lang = Language(message)
     # Check The User is Banned or Not
-    if await db.is_user_banned(message.from_user.id):
-        await bot.send_message(
-                chat_id=message.chat.id,
-                text=lang.ban_text.format(Var.OWNER_ID),
-                parse_mode=ParseMode.MARKDOWN,
-                disable_web_page_preview=True
-            )
+    if await is_user_banned(message, lang):
         return
-    if not await db.is_user_exist(message.from_user.id):
-        await db.add_user(message.from_user.id)
-        await bot.send_message(
-            Var.BIN_CHANNEL,
-            f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ **\n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{message.from_user.first_name}](tg://user?id={message.from_user.id}) __Started Your Bot !!__"
-        )
-    if Var.FORCE_UPDATES_CHANNEL:
-        try:
-            user = await bot.get_chat_member(Var.UPDATES_CHANNEL, message.chat.id)
-            if user.status == "kicked":
-                await bot.send_message(
-                    chat_id=message.chat.id,
-                    text=lang.ban_text.format(Var.OWNER_ID),
-                    parse_mode=ParseMode.HTML,
-                    disable_web_page_preview=True
-                )
-                return
-        except UserNotParticipant:
-            await bot.send_message(
-                chat_id=message.chat.id,
-                text="**Pʟᴇᴀsᴇ Jᴏɪɴ Mʏ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴛʜɪs Bᴏᴛ!**\n\n__Dᴜᴇ ᴛᴏ Oᴠᴇʀʟᴏᴀᴅ, Oɴʟʏ Cʜᴀɴɴᴇʟ Sᴜʙsᴄʀɪʙᴇʀs ᴄᴀɴ ᴜsᴇ ᴛʜᴇ Bᴏᴛ!__",
-                reply_markup=InlineKeyboardMarkup(
-                    [[
-                        InlineKeyboardButton("🤖 Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
-                        ]]
-                ),
-                parse_mode=ParseMode.MARKDOWN
-            )
+    await is_user_exist(bot, message)
+    if Var.TOS:
+        if not await is_user_accepted_tos(message):
             return
-        except Exception:
-            await bot.send_message(
-                chat_id=message.chat.id,
-                text=f"__Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ__ [ ᴄʟɪᴄᴋ ʜᴇʀᴇ ](https://t.me/{Var.UPDATES_CHANNEL}).",
-                parse_mode=ParseMode.MARKDOWN,
-                disable_web_page_preview=True)
+    if Var.FORCE_UPDATES_CHANNEL:
+        if not await is_user_joined(bot,message,lang):
             return
     await message.reply_text(
         text=lang.HELP_TEXT.format(Var.UPDATES_CHANNEL),
@@ -138,15 +77,16 @@ async def help_handler(bot, message):
 # -----------------------------Only for me you can remove below line -------------------------------------------------------
 
 @StreamBot.on_message(filters.command('getid') & filters.private)
-async def start(b, m):
-    await b.send_message(
-        chat_id=m.chat.id,
-        text=f"Your ID is: `{m.chat.id}`"
+async def start(bot, message):
+    await message.reply_text(
+        text=f"Your ID is: `{message.chat.id}`"
     )
 
+# ---------------------------------------------------------------------------------------------------
+
 @StreamBot.on_message(filters.command('myfiles') & filters.private)
-async def my_files(b: Client, m: Message):
-    user_files, total_files=await db.find_files(m.from_user.id, [1,10])
+async def my_files(bot: Client, message: Message):
+    user_files, total_files=await db.find_files(message.from_user.id, [1,10])
 
     file_list=[]
     async for x in user_files:
@@ -159,7 +99,24 @@ async def my_files(b: Client, m: Message):
                 InlineKeyboardButton(">>", callback_data="userfiles_2")
             ]
     )
-    await m.reply_photo(photo=Var.IMAGE_FILEID,
+    if not file_list:
+        file_list.append([InlineKeyboardButton("Empty", callback_data="N/A")])
+    await message.reply_photo(photo=Var.IMAGE_FILEID,
         caption="Total files: {}".format(total_files),
         reply_markup=InlineKeyboardMarkup(file_list))
-    
+
+@StreamBot.on_message(filters.command('tos') & filters.private)
+async def tos(bot: Client, message: Message):
+    if not Var.TOS:
+        await message.reply_text("This bot does not currently have any terms of service.")
+        return
+    if (await is_user_accepted_tos(message)):
+        await message.reply_text(
+            Var.TOS,
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✅ I accepted the TOS", callback_data="N/A")]])
+            )
+    else:
+        await message.reply_text(
+            Var.TOS,
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("I accept the TOS", callback_data=f"accepttos_{message.from_user.id}")]])
+            )

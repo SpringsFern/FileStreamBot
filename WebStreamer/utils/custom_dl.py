@@ -1,16 +1,13 @@
 # This file is a part of FileStreamBot
 
-import math
 import asyncio
 import logging
-from WebStreamer import Var
 from typing import Dict, Union
 from WebStreamer.bot import work_loads
 from pyrogram import Client, utils, raw
 from .file_properties import get_file_ids
 from pyrogram.session import Session, Auth
 from pyrogram.errors import AuthBytesInvalid
-from WebStreamer.server.exceptions import FIleNotFound
 from pyrogram.file_id import FileId, FileType, ThumbnailSource
 
 

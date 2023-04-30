@@ -19,16 +19,17 @@ class Database:
     def new_user(self, id):
         return dict(
             id=id,
-            join_date=time.time()
+            join_date=time.time(),
+            agreed_to_tos=False
         )
 
     async def add_user(self, id):
         user = self.new_user(id)
         await self.col.insert_one(user)
 
-    async def is_user_exist(self, id):
+    async def get_user(self, id):
         user = await self.col.find_one({'id': int(id)})
-        return True if user else False
+        return user
 
     async def total_users_count(self):
         count = await self.col.count_documents({})
@@ -40,6 +41,16 @@ class Database:
 
     async def delete_user(self, user_id):
         await self.col.delete_many({'id': int(user_id)})
+
+    async def agreed_tos(self, user_id):
+        await self.col.update_one(
+            {"id": int(user_id)},
+            {"$set": {
+                "agreed_to_tos": True,
+                "when_agreed_to_tos": time.time()
+                }
+            }
+        )
 
 # ----------------------ban, check banned or unban user----------------------
     def black_user(self, id):

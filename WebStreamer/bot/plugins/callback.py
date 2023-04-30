@@ -2,18 +2,14 @@
 
 import datetime
 import math
-import random
 from WebStreamer import __version__
 from WebStreamer.bot import StreamBot
-from WebStreamer.utils.file_properties import gen_link, get_media_file_unique_id
 from WebStreamer.vars import Var
 from WebStreamer.utils.Translation import Language, BUTTON
 from WebStreamer.utils.database import Database
 from WebStreamer.utils.human_readable import humanbytes
 from WebStreamer.server.exceptions import FIleNotFound
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMedia, InputMediaPhoto
-from pyrogram.errors import MessageDeleteForbidden
-from pyrogram.enums.parse_mode import ParseMode
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram.file_id import FileId, FileType, PHOTO_TYPES
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
@@ -57,25 +53,17 @@ async def cb_data(bot, update: CallbackQuery):
         await delete_user_file(usr_cmd[1], int(usr_cmd[2]), update)
         return
     elif usr_cmd[0] == "userfiles":
-        file_list = await gen_file_list_button(int(usr_cmd[1]), update.from_user.id)
+        file_list, total_files = await gen_file_list_button(int(usr_cmd[1]), update.from_user.id)
         await update.message.edit_caption(
-            caption=update.message.caption,
+            caption="Total files: {}".format(total_files),
             reply_markup=InlineKeyboardMarkup(file_list)
             )
     elif usr_cmd[0] == "myfile":
         await gen_file_menu(usr_cmd[1], usr_cmd[2], update)
         return
-    elif usr_cmd[0] == "deletelost":
-        myfile_info=await db.get_file(usr_cmd[1])
-        await db.delete_one_file(myfile_info['_id'])
-        await update.message.edit_caption(
-            caption= update.message.caption,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data=f"userfiles_1")]])
-        )
-
-    elif usr_cmd[0] == "restorelost":
-        await update.answer("Not Available")
-
+    elif usr_cmd[0] == "accepttos":
+        await db.agreed_tos(int(usr_cmd[1]))
+        await update.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✅ I accepted the TOS", callback_data="N/A")]]))
     else:
         await update.message.delete()
 
@@ -95,7 +83,9 @@ async def gen_file_list_button(file_list_no: int, user_id: int):
                 InlineKeyboardButton(">>", callback_data="{}".format("userfiles_"+str(file_list_no+1) if total_files > file_list_no*10 else 'N/A'))
             ]
     )
-    return file_list
+    if not file_list:
+        file_list.append([InlineKeyboardButton("Empty", callback_data="N/A")])
+    return file_list, total_files
 
 async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     try:
@@ -103,7 +93,6 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     except FIleNotFound:
         await update.answer("File Not Found")
         return
-    # get_msg = await update._client.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(myfile_info['msg_id']))
 
     file_id=FileId.decode(myfile_info['file_id'])
 
@@ -121,18 +110,6 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
         file_type="Audio"
     else:
         file_type = "Unknown"
-
-    # if not get_media_file_unique_id(get_msg) == myfile_info['file_unique_id']:
-    #     await update.message.edit_caption(
-    #         caption="File not available on server\nName: {}\nFile Size: {}\nType: {}\nCreated at: {}".format(myfile_info['file_name'], humanbytes(int(myfile_info['file_size'])), file_type, myfile_info['time']),
-    #         reply_markup=InlineKeyboardMarkup(
-    #         [
-    #             [InlineKeyboardButton("Restore", callback_data=f"restorelost_{myfile_info['_id']}"), InlineKeyboardButton("Delete Link", callback_data=f"deletelost_{myfile_info['_id']}")],
-    #             [InlineKeyboardButton("Back", callback_data="userfiles_{}".format(file_list_no))]
-    #         ]
-    #         )
-    #     )
-    #     return
 
     page_link = f"{Var.URL}watch/{myfile_info['_id']}"
     stream_link = f"{Var.URL}dl/{myfile_info['_id']}"
@@ -156,32 +133,6 @@ async def delete_user_file(_id, file_list_no: int, update:CallbackQuery):
     except FIleNotFound:
         await update.answer("File Not Found")
         return
-    # get_msg = await update._client.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(myfile_info['msg_id']))
-    
-    # if not get_media_file_unique_id(get_msg) == myfile_info['file_unique_id']:
-    #     await db.delete_one_file(myfile_info['_id'])
-    #     await update.message.edit_caption(
-    #     caption= "<b>Something went wrong<b>\n" + update.message.caption,
-    #     reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data=f"userfiles_1")]])
-    #     )
-    #     return
-    # if not UserBot:
-    #     try:
-    #         await db.delete_one_file(myfile_info['_id'])
-    #     except MessageDeleteForbidden as e:
-    #         await update.answer("Contact owner to enable this feature",show_alert=True)
-    #         return
-    #     except Exception as e:
-    #         logging.error(e)
-    #         error_id=await update._client.send_message(
-    #             chat_id=Var.BIN_CHANNEL,
-    #             text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `{e}`\n#Delete_Link", disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN,
-    #         )
-    #         await update.message.reply_text(
-    #             text=f"**#ᴇʀʀᴏʀ_ᴛʀᴀᴄᴇʙᴀᴄᴋ:** `message_id={error_id.message_id}`\nYou can get Help from [Public Link Generator (Support)](https://t.me/{Var.UPDATES_CHANNEL})", disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN,
-    #         )
-    #         return
-    # else:
 
     await db.delete_one_file(myfile_info['_id'])
     await update.message.edit_caption(

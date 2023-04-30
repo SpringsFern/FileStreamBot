@@ -1,6 +1,6 @@
 # This file is a part of FileStreamBot
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from WebStreamer.vars import Var
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 
 
 class Language(object):
@@ -31,7 +31,7 @@ class Language(object):
         ABOUT_TEXT = """
 <b>⚜ Mʏ ɴᴀᴍᴇ : Public Link Generator</b>\n
 <b>🔸Vᴇʀꜱɪᴏɴ : {}</b>\n
-<b>🔹Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ : [ 26-Feb-2023 ] 8:46 PM</b>
+<b>🔹Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ : [ 1-May-2023 ] 1:19 AM</b>
 """
 
         stream_msg_text ="""
@@ -111,10 +111,3 @@ class BUTTON(object):
         [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     )
-
-class Data:
-    generate_single_button = [
-        InlineKeyboardButton("🔥 sᴛᴀʀᴛ ɢᴇɴᴇʀᴀᴛɪɴɢ sᴇssɪᴏɴ 🔥", callback_data="generate")
-    ]
-
-    generate_button = [generate_single_button]

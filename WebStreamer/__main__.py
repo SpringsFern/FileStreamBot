@@ -7,9 +7,9 @@ import logging.handlers as handlers
 from .vars import Var
 from aiohttp import web
 from pyrogram import idle
-from WebStreamer import utils
-from WebStreamer import StreamBot
+from WebStreamer.bot import StreamBot
 from WebStreamer.server import web_server
+from WebStreamer.utils import ping_server
 from WebStreamer.bot.clients import initialize_clients
 
 
@@ -49,7 +49,7 @@ async def start_services():
     if Var.KEEP_ALIVE:
         print("------------------ Starting Keep Alive Service ------------------")
         print()
-        asyncio.create_task(utils.ping_server())
+        asyncio.create_task(ping_server())
     print("--------------------- Initializing Web Server ---------------------")
     await server.setup()
     await web.TCPSite(server, Var.BIND_ADDRESS, Var.PORT).start()

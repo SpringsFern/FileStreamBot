@@ -1,5 +1,12 @@
+[2.21]
 * Changed Download Link Path
 * Using DataBase to Store File
 * Forgot f
+
+[2.30]
 * Fixed Error with Broadcast
-* Changed Version
+
+[2.31]
+* Fixed no reply for /myfiles command when user has 0 files
+* Removed unwanted codes and lines
+* Added TOS

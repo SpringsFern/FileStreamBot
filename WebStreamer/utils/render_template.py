@@ -1,15 +1,11 @@
 # This file is a part of FileStreamBot
 
-from WebStreamer import utils
-from WebStreamer.vars import Var
-from WebStreamer.bot import StreamBot
-from WebStreamer.utils.human_readable import humanbytes
-from WebStreamer.utils.database import Database
-from WebStreamer.server.exceptions import InvalidHash
-import urllib.parse
-import aiofiles
-import logging
 import aiohttp
+import aiofiles
+import urllib.parse
+from WebStreamer.vars import Var
+from WebStreamer.utils.database import Database
+from WebStreamer.utils.human_readable import humanbytes
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
 async def render_page(db_id):

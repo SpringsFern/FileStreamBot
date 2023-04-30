@@ -3,7 +3,6 @@
 
 from ..vars import Var
 from pyrogram import Client
-from os import getcwd
 
 StreamBot = Client(
     name="WebStreamer",

@@ -1,18 +1,17 @@
 # Taken from megadlbot_oss <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/webserver/routes.py>
 # Thanks to Eyaadh <https://github.com/eyaadh>
 
-import re
 import time
 import math
 import logging
-import secrets
 import mimetypes
 import traceback
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
-from WebStreamer.bot import multi_clients, work_loads
+from WebStreamer.bot import multi_clients, work_loads, StreamBot
+from WebStreamer.vars import Var
 from WebStreamer.server.exceptions import FIleNotFound, InvalidHash
-from WebStreamer import Var, utils, StartTime, __version__, StreamBot
+from WebStreamer import utils, StartTime, __version__
 from WebStreamer.utils.render_template import render_page
 
 
