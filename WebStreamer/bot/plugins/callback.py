@@ -3,6 +3,7 @@
 import datetime
 import math
 import random
+from WebStreamer import __version__
 from WebStreamer.bot import StreamBot
 from WebStreamer.utils.file_properties import gen_link, get_media_file_unique_id
 from WebStreamer.vars import Var
@@ -37,7 +38,7 @@ async def cb_data(bot, update: CallbackQuery):
         )
     elif usr_cmd[0] == "about":
         await update.message.edit_text(
-            text=lang.ABOUT_TEXT,
+            text=lang.ABOUT_TEXT.format(__version__),
             disable_web_page_preview=True,
             reply_markup=BUTTON.ABOUT_BUTTONS
         )

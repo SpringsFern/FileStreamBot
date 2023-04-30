@@ -1,11 +1,12 @@
 # This file is a part of FileStreamBot
 
 import math
+from WebStreamer import __version__
 from WebStreamer.bot import StreamBot
 from WebStreamer.vars import Var
 from WebStreamer.utils.database import Database
-from pyrogram import filters, Client
 from WebStreamer.utils.Translation import Language, BUTTON
+from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums.parse_mode import ParseMode
@@ -73,7 +74,7 @@ async def start(b, m):
 async def start(bot, update):
     lang = Language(update)
     await update.reply_text(
-        text=lang.ABOUT_TEXT.format(update.from_user.mention),
+        text=lang.ABOUT_TEXT.format(__version__),
         disable_web_page_preview=True,
         reply_markup=BUTTON.ABOUT_BUTTONS
     )

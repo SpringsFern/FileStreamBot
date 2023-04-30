@@ -109,7 +109,10 @@ async def broadcast_(c, m):
                         success=success
                     )
                 )
-                await out.edit_text(f"Broadcast Status\n\ncurrent: {done}\nfailed:{failed}\nsuccess: {success}")
+                try:
+                    await out.edit_text(f"Broadcast Status\n\ncurrent: {done}\nfailed:{failed}\nsuccess: {success}")
+                except:
+                    pass
     if broadcast_ids.get(broadcast_id):
         broadcast_ids.pop(broadcast_id)
     completed_in = datetime.timedelta(seconds=int(time.time() - start_time))
