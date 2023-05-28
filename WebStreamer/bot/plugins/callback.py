@@ -64,6 +64,10 @@ async def cb_data(bot, update: CallbackQuery):
     elif usr_cmd[0] == "accepttos":
         await db.agreed_tos(int(usr_cmd[1]))
         await update.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✅ I accepted the TOS", callback_data="N/A")]]))
+    elif usr_cmd[0] == "sendfile":
+        myfile = await db.get_file(usr_cmd[1])
+        await update.answer(f"Sending File {myfile['file_name']}")
+        await update.message.reply_cached_media(myfile['file_id'])
     else:
         await update.message.delete()
 
@@ -121,7 +125,8 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton("Back", callback_data="userfiles_{}".format(file_list_no)), InlineKeyboardButton("Delete Link", callback_data=f"msgdelconf2_{myfile_info['_id']}_{file_list_no}")],
-                [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]
+                [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)],
+                [InlineKeyboardButton("Get File", callback_data=f"sendfile_{myfile_info['_id']}")]
             ]
             )
         )

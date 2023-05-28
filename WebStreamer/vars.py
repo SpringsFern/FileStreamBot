@@ -1,5 +1,5 @@
 # This file is a part of FileStreamBot
-from  urllib import request
+from urllib import request
 from os import environ
 from dotenv import load_dotenv
 
@@ -41,3 +41,5 @@ class Var(object):
         response = request.urlopen(TOS)
         data = response.read().decode('utf-8')
         TOS = data.strip()
+
+    TN_API = environ.get('TN_API')

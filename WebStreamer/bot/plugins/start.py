@@ -1,8 +1,12 @@
 # This file is a part of FileStreamBot
 
+import logging
+import re
 import math
+import requests
 from WebStreamer import __version__
 from WebStreamer.bot import StreamBot
+from WebStreamer.server.exceptions import FIleNotFound
 from WebStreamer.utils.bot_utils import is_user_accepted_tos, is_user_banned, is_user_exist, is_user_joined
 from WebStreamer.vars import Var
 from WebStreamer.utils.database import Database
@@ -12,9 +16,10 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.enums.parse_mode import ParseMode
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
+url_pattern = re.compile(r'https?://dl\.tgxlink\.eu\.org/dl/([0-9a-fA-F]{24})')
 
 @StreamBot.on_message(filters.command('start') & filters.private)
-async def start(bot, message):
+async def start(bot: Client, message: Message):
     lang = Language(message)
     # Check The User is Banned or Not
     if await is_user_banned(message, lang):
@@ -27,12 +32,27 @@ async def start(bot, message):
     if Var.FORCE_UPDATES_CHANNEL:
         if not is_user_joined(bot,message,lang):
             return
-    await message.reply_text(
-        text=lang.START_TEXT.format(message.from_user.mention),
-        parse_mode=ParseMode.HTML,
-        disable_web_page_preview=True,
-        reply_markup=BUTTON.START_BUTTONS
-        )
+    usr_cmd = message.text.split(" ")
+    if usr_cmd[-1] == "/start":
+        await message.reply_text(
+            text=lang.START_TEXT.format(message.from_user.mention),
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+            reply_markup=BUTTON.START_BUTTONS
+            )
+    else:
+        try:
+            _id, file_unique_id=(usr_cmd[-1]).split("_")
+            myfile = await db.get_file(_id)
+            if myfile['file_unique_id'] == file_unique_id:
+                await message.reply_cached_media(myfile['file_id'])
+            else:
+                await message.reply_text("File not found")
+        except FIleNotFound as e:
+            return message.reply_text(e)
+        except Exception as e:
+            logging.error(e)
+            await message.reply_text("Something Went Wrong")
 
 
 @StreamBot.on_message(filters.private & filters.command(["about"]))
@@ -120,3 +140,24 @@ async def tos(bot: Client, message: Message):
             Var.TOS,
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("I accept the TOS", callback_data=f"accepttos_{message.from_user.id}")]])
             )
+
+@StreamBot.on_message(filters.text & filters.private & filters.regex(url_pattern))
+async def file_from_link(bot: Client, message: Message):
+
+    match = url_pattern.search(message.text)
+
+    object_id = match.group(1)
+    try:
+        myfile = await db.get_file(object_id)
+    except FIleNotFound as e:
+        return message.reply_text(e)
+    params={
+            "api": Var.TN_API,
+            "url": f"https://t.me/{StreamBot.username}?start={myfile['_id']}_{myfile['file_unique_id']}",
+            "alias": f"{str(message.id)}_{message.from_user.id}"
+        }
+    shortned_url=(requests.get("https://tnlinks.in/api",params=params)).json()
+    if shortned_url['status'] == "success":
+        await message.reply_text("[Click here to get file]({})".format(shortned_url['shortenedUrl']))
+    else:
+        await message.reply_text("Please try again later")
