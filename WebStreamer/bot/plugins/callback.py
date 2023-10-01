@@ -140,6 +140,7 @@ async def delete_user_file(_id, file_list_no: int, update:CallbackQuery):
         return
 
     await db.delete_one_file(myfile_info['_id'])
+    await db.count_links(update.from_user.id, "-")
     await update.message.edit_caption(
             caption= "<b>Deleted Link Successfully<b>\n" + update.message.caption.replace("Do You Want to Delete the file", ""),
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Back", callback_data=f"userfiles_1")]])

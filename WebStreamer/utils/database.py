@@ -20,7 +20,9 @@ class Database:
         return dict(
             id=id,
             join_date=time.time(),
-            agreed_to_tos=False
+            agreed_to_tos=False,
+            Links=0,
+            Plan="Free"
         )
 
     async def add_user(self, id):
@@ -77,6 +79,10 @@ class Database:
 # --------------------------------------------------------
     async def add_file(self, file_info):
         file_info["time"]=time.time()
+        fetch_old = await self.get_file_by_fileuniqueid(file_info["file_unique_id"])
+        if fetch_old:
+            return fetch_old
+        await self.count_links(file_info["user_id"], "+")
         return (await self.file.insert_one(file_info)).inserted_id
 
     async def find_files(self, user_id, range):
@@ -95,9 +101,29 @@ class Database:
             return file_info
         except InvalidId:
             raise FIleNotFound
+    
+    async def get_file_by_fileuniqueid(self, file_unique_id):
+        file_info=await self.file.find_one({"file_unique_id": file_unique_id})
+        if file_info:
+            return file_info["_id"]
+        return False
+
 
     async def delete_one_file(self, _id):
         await self.file.delete_one({'_id': ObjectId(_id)})
 
     async def update_file_ids(self, _id, file_ids: dict):
         await self.file.update_one({"_id": ObjectId(_id)}, {"$set": {"file_ids": file_ids}})
+
+    async def link_available(self, id):
+        user = await self.col.find_one({"id": id})
+        if user.get("Plan") == "Free":
+            if user.get("Links") < 16:
+                return True
+            return False
+        
+    async def count_links(self, id, operation: str):
+        if operation == "-":
+            await self.col.update_one({"id": id}, {"$inc": {"Links": -1}})
+        elif operation == "+":
+            await self.col.update_one({"id": id}, {"$inc": {"Links": 1}})

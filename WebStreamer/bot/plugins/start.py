@@ -161,3 +161,17 @@ async def file_from_link(bot: Client, message: Message):
         await message.reply_text("[Click here to get file]({})".format(shortned_url['shortenedUrl']))
     else:
         await message.reply_text("Please try again later")
+
+@StreamBot.on_message(filters.command('info') & filters.private)
+async def tos(bot: Client, message: Message):
+    user = await db.get_user(message.from_user.id)
+    links=0
+    if user.get("Plan") == "Free":
+        links=15-user.get("Links")
+    await message.reply_text(f"""User ID: <code>{message.from_user.id}</code>
+Plan: {user.get("Plan")}
+Links Used: {user.get("Links")}
+Links Left: {links}
+
+For Additional Links Contact @DeekshithSH
+Note: This Plan Can be Changed at any time""")

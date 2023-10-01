@@ -41,6 +41,8 @@ async def private_receive_handler(bot: Client, message: Message):
         if not await is_user_joined(bot,message,lang):
             return
     try:
+        if not (await db.link_available(message.from_user.id)):
+            return await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Purchase More Links\nNote: This Plan Can be Changed at any time")
         inserted_id=await db.add_file(get_file_info(message))
         reply_markup, Stream_Text = await gen_link(m=message, from_channel=False, _id=inserted_id)
         await message.reply_text(

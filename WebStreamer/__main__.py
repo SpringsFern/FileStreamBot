@@ -3,6 +3,7 @@
 import sys
 import asyncio
 import logging
+import traceback
 import logging.handlers as handlers
 from .vars import Var
 from aiohttp import web
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     except Exception as err:
-        logging.error(err.with_traceback(None))
+        logging.error(traceback.format_exc())
     finally:
         loop.run_until_complete(cleanup())
         loop.stop()
