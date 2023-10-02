@@ -119,6 +119,6 @@ dmypy.json
 
 .env
 test.py
-test2.py
+/test
 
 streambot.log.*

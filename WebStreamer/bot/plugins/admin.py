@@ -10,6 +10,7 @@ import datetime
 from WebStreamer.utils.broadcast_helper import send_msg
 from WebStreamer.utils.database import Database
 from WebStreamer.bot import StreamBot
+from WebStreamer.utils.file_properties import get_media_from_message
 from WebStreamer.vars import Var
 from pyrogram import filters, Client
 from pyrogram.types import Message
@@ -131,3 +132,15 @@ async def broadcast_(c, m):
             quote=True
         )
     os.remove('broadcast.txt')
+
+@StreamBot.on_message(filters.command("who") & filters.private & filters.user(Var.OWNER_ID) & filters.reply)
+async def sts(c: Client, m: Message):
+    media=get_media_from_message(m.reply_to_message)
+    if media:
+        text="User List Who sent the file"
+        file_info = await db.get_file_by_fileuniqueid(0, media.file_unique_id, True)
+        async for x in file_info:
+            text+=f"\n<a href='tg://user?id={x['user_id']}'>{x['user_id']}</a>"
+        await m.reply_text(text)
+    else:
+        await m.reply_text("Please Reply to a Link")
