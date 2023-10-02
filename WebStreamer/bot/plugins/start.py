@@ -164,7 +164,11 @@ async def file_from_link(bot: Client, message: Message):
 
 @StreamBot.on_message(filters.command('info') & filters.private)
 async def tos(bot: Client, message: Message):
-    user = await db.get_user(message.from_user.id)
+    i_cmd=message.text.split()
+    if (message.from_user.id == Var.OWNER_ID) and (len(i_cmd) > 1):
+        user = await db.get_user(int(i_cmd[2]))
+    else:
+        user = await db.get_user(message.from_user.id)
     links=0
     if user.get("Plan") == "Free":
         links=15-user.get("Links")

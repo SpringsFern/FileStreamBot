@@ -5,3 +5,4 @@ tgcrypto
 motor
 aiofiles
 dnspython
+requests

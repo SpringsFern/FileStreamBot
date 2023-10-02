@@ -79,7 +79,7 @@ class Database:
 # --------------------------------------------------------
     async def add_file(self, file_info):
         file_info["time"]=time.time()
-        fetch_old = await self.get_file_by_fileuniqueid(file_info["file_unique_id"])
+        fetch_old = await self.get_file_by_fileuniqueid(file_info["user_id"], file_info["file_unique_id"])
         if fetch_old:
             return fetch_old
         await self.count_links(file_info["user_id"], "+")
@@ -102,12 +102,14 @@ class Database:
         except InvalidId:
             raise FIleNotFound
     
-    async def get_file_by_fileuniqueid(self, file_unique_id):
-        file_info=await self.file.find_one({"file_unique_id": file_unique_id})
+    async def get_file_by_fileuniqueid(self, id, file_unique_id):
+        file_info=await self.file.find_one({"user_id": id, "file_unique_id": file_unique_id})
         if file_info:
             return file_info["_id"]
         return False
 
+    async def total_files(self):
+        return await self.file.count_documents({})
 
     async def delete_one_file(self, _id):
         await self.file.delete_one({'_id': ObjectId(_id)})
