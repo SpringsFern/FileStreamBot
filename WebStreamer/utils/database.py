@@ -122,8 +122,11 @@ class Database:
 
     async def link_available(self, id):
         user = await self.col.find_one({"id": id})
-        if user.get("Plan") == "Free":
-            if user.get("Links") < 16:
+        if user.get("Plan") == "Plus":
+            return "Plus"
+        elif user.get("Plan") == "Free":
+            files = await self.file.count_documents({"user_id": id})
+            if files < 16:
                 return True
             return False
         
