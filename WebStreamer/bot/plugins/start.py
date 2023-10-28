@@ -167,15 +167,17 @@ async def tos(bot: Client, message: Message):
     i_cmd=message.text.split()
     if (message.from_user.id == Var.OWNER_ID) and (len(i_cmd) > 1):
         user = await db.get_user(int(i_cmd[2]))
+        files=await db.total_files(int(i_cmd[2]))
     else:
         user = await db.get_user(message.from_user.id)
-    links=0
+        files=await db.total_files(message.from_user.id)
+    links="N/A"
     if user.get("Plan") == "Free":
         links=15-user.get("Links")
     await message.reply_text(f"""User ID: <code>{message.from_user.id}</code>
 Plan: {user.get("Plan")}
-Links Used: {user.get("Links")}
-Links Left: {links}
+Links Used: <code>{files}</code>
+Links Left: <code>{links}<code>
 
 For Additional Links Contact @DeekshithSH
 Note: This Plan Can be Changed at any time""")

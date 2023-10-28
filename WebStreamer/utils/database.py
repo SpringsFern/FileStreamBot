@@ -111,7 +111,9 @@ class Database:
             return file_info
         return False
 
-    async def total_files(self):
+    async def total_files(self, id=None):
+        if id:
+            return await self.file.count_documents({"user_id": id})
         return await self.file.count_documents({})
 
     async def delete_one_file(self, _id):
