@@ -42,7 +42,7 @@ async def private_receive_handler(bot: Client, message: Message):
             return
     try:
         if not (await db.link_available(message.from_user.id)):
-            return await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Purchase More Links\nPaid link will cost INR ₹2 Per Link\nNote: This Plan Can be Changed at any time")
+            return await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Generate More Links\nPaid link will cost INR ₹50 per month\nNote: This Plan Can be Changed at any time")
         inserted_id=await db.add_file(get_file_info(message))
         reply_markup, Stream_Text = await gen_link(m=message, from_channel=False, _id=inserted_id)
         await message.reply_text(
