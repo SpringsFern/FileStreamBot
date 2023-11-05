@@ -39,7 +39,7 @@ async def is_user_joined(bot, message:Message,lang):
     return True
 
 # Generate Text, Stream Link, reply_markup
-async def gen_link(m: Message, from_channel: bool, _id):
+async def gen_link(m: Message, _id, name: list):
     """Generate Text for Stream Link, Reply Text and reply_markup"""
     # lang = getattr(Language, message.from_user.language_code)
     lang = Language(m)
@@ -48,7 +48,7 @@ async def gen_link(m: Message, from_channel: bool, _id):
     page_link = f"{Var.URL}watch/{_id}"
     
     stream_link = f"{Var.URL}dl/{_id}"
-    Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link)
+    Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link, name[0], name[1])
     reply_markup=InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]

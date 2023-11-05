@@ -45,6 +45,7 @@ async def start_services():
     bot_info = await StreamBot.get_me()
     StreamBot.id = bot_info.id
     StreamBot.username = bot_info.username
+    StreamBot.fname=bot_info.first_name
     print("------------------------------ DONE ------------------------------")
     print()
     print("---------------------- Initializing Clients ----------------------")
