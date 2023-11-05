@@ -3,10 +3,10 @@
 
 import asyncio
 from WebStreamer.utils.Translation import Language
-from WebStreamer.bot import StreamBot
+from WebStreamer.bot import StreamBot, multi_clients
 from WebStreamer.utils.bot_utils import is_user_accepted_tos, is_user_banned, is_user_exist, is_user_joined, gen_link
 from WebStreamer.utils.database import Database
-from WebStreamer.utils.file_properties import get_file_info
+from WebStreamer.utils.file_properties import get_file_ids, get_file_info
 from WebStreamer.vars import Var
 from pyrogram import filters, Client
 from pyrogram.errors import FloodWait
@@ -44,6 +44,7 @@ async def private_receive_handler(bot: Client, message: Message):
         if not (await db.link_available(message.from_user.id)):
             return await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Generate More Links\nPaid link will cost INR ₹50 per month\nNote: This Plan Can be Changed at any time")
         inserted_id=await db.add_file(get_file_info(message))
+        await get_file_ids(False, inserted_id, multi_clients)
         reply_markup, Stream_Text = await gen_link(m=message, from_channel=False, _id=inserted_id)
         await message.reply_text(
             text=Stream_Text,

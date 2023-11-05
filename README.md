@@ -148,7 +148,7 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `PING_INTERVAL` : The time in ms you want the servers to be pinged each time to avoid sleeping (Only for Heroku). Defaults to `1200` or 20 minutes.
 
-`UPDATES_CHANNEL` : Your Telegram Channel
+`UPDATES_CHANNEL` : Your Telegram Channel Username without @
 
 `FORCE_UPDATES_CHANNEL` : Set to True, so every user have to Join update channel to use the bot.
 
@@ -157,6 +157,11 @@ you may also add as many as bots you want. (max limit is not tested yet)
 `BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
 
 `KEEP_ALIVE` : If you want to make the server ping itself every `PING_INTERVAL` seconds to avoid sleeping. Helpful in PaaS Free tiers. Defaults to `False`
+`IMAGE_FILEID` : Photo to send with /myfiles command. Put file_id to send a photo that exists on the Telegram servers or Put an HTTP URL to get a photo from the Internet
+
+`TOS` : URL to your Terms of Service Text
+
+`MODE` should be set to secondary if you only want to use the server for serving files
 
 ## How to use the bot
 

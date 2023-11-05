@@ -64,6 +64,7 @@ async def stream_handler(request: web.Request):
     except Exception as e:
         traceback.print_exc()
         logging.critical(e.with_traceback(None))
+        logging.debug(traceback.format_exc())
         raise web.HTTPInternalServerError(text=str(e))
 
 class_cache = {}
