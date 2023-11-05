@@ -173,9 +173,9 @@ async def tos(bot: Client, message: Message):
         files=await db.total_files(message.from_user.id)
     links="N/A"
     if user.get("Plan") == "Free":
-        links=15-user.get("Links")
+        links=10-user.get("Links")
     await message.reply_text(f"""User ID: <code>{message.from_user.id}</code>
-Plan: {user.get("Plan")}
+Plan: <code>{user.get("Plan")}</code>
 Links Used: <code>{files}</code>
 Links Left: <code>{links}<code>
 

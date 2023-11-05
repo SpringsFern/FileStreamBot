@@ -128,7 +128,7 @@ class Database:
             return "Plus"
         elif user.get("Plan") == "Free":
             files = await self.file.count_documents({"user_id": id})
-            if files < 16:
+            if files < 11:
                 return True
             return False
         
