@@ -12,7 +12,7 @@ from WebStreamer.utils.database import Database
 from WebStreamer.vars import Var
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
-async def get_file_ids(client: Client | bool, db_id: str, multi_clients) -> Optional[FileId]:
+async def get_file_ids(client: Client | bool, db_id: str, multi_clients, index=None) -> Optional[FileId]:
     logging.debug("Starting of get_file_ids")
     file_info = await db.get_file(db_id)
     if (not "file_ids" in file_info) or not client:
@@ -40,6 +40,7 @@ async def get_file_ids(client: Client | bool, db_id: str, multi_clients) -> Opti
     setattr(file_id, "mime_type", file_info['mime_type'])
     setattr(file_id, "file_name", file_info['file_name'])
     setattr(file_id, "unique_id", file_info['file_unique_id'])
+    setattr(file_id, "index", index)
     logging.debug("Ending of get_file_ids")
     return file_id
 

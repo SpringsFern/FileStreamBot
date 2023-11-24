@@ -12,7 +12,7 @@ from pyrogram.file_id import FileId, FileType, ThumbnailSource
 
 
 class ByteStreamer:
-    def __init__(self, client: Client):
+    def __init__(self):
         """A custom class that holds the cache of a specific client and class functions.
         attributes:
             client: the client that the cache is for.
@@ -28,7 +28,6 @@ class ByteStreamer:
         Thanks to Eyaadh <https://github.com/eyaadh>
         """
         self.clean_timer = 30 * 60
-        self.client: Client = client
         self.cached_file_ids: Dict[str, FileId] = {}
         asyncio.create_task(self.clean_cache())
 
@@ -50,7 +49,8 @@ class ByteStreamer:
         returns ths properties in a FIleId class.
         """
         logging.debug("Before calling get_file_ids")
-        file_id = await get_file_ids(self.client, db_id, multi_clients)
+        index = min(work_loads, key=work_loads.get)
+        file_id = await get_file_ids(multi_clients[index], db_id, multi_clients, index)
         logging.debug(f"Generated file ID and Unique ID for file with ID {db_id}")
         self.cached_file_ids[db_id] = file_id
         logging.debug(f"Cached media file with ID {db_id}")
@@ -161,21 +161,21 @@ class ByteStreamer:
     async def yield_file(
         self,
         file_id: FileId,
-        index: int,
         offset: int,
         first_part_cut: int,
         last_part_cut: int,
         part_count: int,
         chunk_size: int,
+        multi_clients
     ) -> Union[str, None]:
         """
         Custom generator that yields the bytes of the media file.
         Modded from <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/telegram/utils/custom_download.py#L20>
         Thanks to Eyaadh <https://github.com/eyaadh>
         """
-        client = self.client
-        work_loads[index] += 1
-        logging.debug(f"Starting to yielding file with client {index}.")
+        client = multi_clients[file_id.index]
+        work_loads[file_id.index] += 1
+        logging.debug(f"Starting to yielding file with client {file_id.index}.")
         media_session = await self.generate_media_session(client, file_id)
 
         current_part = 1
@@ -217,7 +217,7 @@ class ByteStreamer:
             pass
         finally:
             logging.debug(f"Finished yielding file with {current_part} parts.")
-            work_loads[index] -= 1
+            work_loads[file_id.index] -= 1
 
     
     async def clean_cache(self) -> None:

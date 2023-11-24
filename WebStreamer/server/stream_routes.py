@@ -13,8 +13,6 @@ from WebStreamer.vars import Var
 from WebStreamer.server.exceptions import FIleNotFound, InvalidHash
 from WebStreamer import utils, StartTime, __version__
 from WebStreamer.utils.render_template import render_page
-
-
 routes = web.RouteTableDef()
 
 @routes.get("/status", allow_head=True)
@@ -68,26 +66,23 @@ async def stream_handler(request: web.Request):
         raise web.HTTPInternalServerError(text=str(e))
 
 class_cache = {}
-
 async def media_streamer(request: web.Request, db_id: str):
+    if not utils.tg_connect:
+        logging.debug(f"Creating new ByteStreamer object")
+        utils.tg_connect=utils.ByteStreamer()
+    else:
+        logging.debug(f"Using cached ByteStreamer object")
+    tg_connect=utils.tg_connect
     range_header = request.headers.get("Range", 0)
     
-    index = min(work_loads, key=work_loads.get)
-    faster_client = multi_clients[index]
-    
-    if Var.MULTI_CLIENT:
-        logging.info(f"Client {index} is now serving {request.headers.get('X-FORWARDED-FOR',request.remote)}")
+    # index = min(work_loads, key=work_loads.get)
 
-    if faster_client in class_cache:
-        tg_connect = class_cache[faster_client]
-        logging.debug(f"Using cached ByteStreamer object for client {index}")
-    else:
-        logging.debug(f"Creating new ByteStreamer object for client {index}")
-        tg_connect = utils.ByteStreamer(faster_client)
-        class_cache[faster_client] = tg_connect
     logging.debug("before calling get_file_properties")
     file_id = await tg_connect.get_file_properties(db_id, multi_clients)
     logging.debug("after calling get_file_properties")
+    
+    if Var.MULTI_CLIENT:
+        logging.info(f"Client {file_id.index} is now serving {request.headers.get('X-FORWARDED-FOR',request.remote)}")
     
     file_size = file_id.file_size
 
@@ -116,7 +111,7 @@ async def media_streamer(request: web.Request, db_id: str):
     req_length = until_bytes - from_bytes + 1
     part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
     body = tg_connect.yield_file(
-        file_id, index, offset, first_part_cut, last_part_cut, part_count, chunk_size
+        file_id, offset, first_part_cut, last_part_cut, part_count, chunk_size, multi_clients
     )
 
     mime_type = file_id.mime_type
