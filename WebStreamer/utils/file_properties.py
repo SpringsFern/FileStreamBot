@@ -14,7 +14,10 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
 async def get_file_ids(client: Client | bool, db_id: str, multi_clients, index=None) -> Optional[FileId]:
     logging.debug("Starting of get_file_ids")
-    org_id=await db.get_file_id(db_id)
+    if not index:
+        org_id=db_id
+    else:
+        org_id=await db.get_file_id(db_id)
     file_info = await db.get_file(org_id)
     if (not "file_ids" in file_info) or not client:
         logging.debug("Storing file_id of all clients in DB")
