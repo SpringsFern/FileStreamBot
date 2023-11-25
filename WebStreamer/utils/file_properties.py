@@ -14,15 +14,16 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
 async def get_file_ids(client: Client | bool, db_id: str, multi_clients, index=None) -> Optional[FileId]:
     logging.debug("Starting of get_file_ids")
-    file_info = await db.get_file(db_id)
+    org_id=await db.get_file_id(db_id)
+    file_info = await db.get_file(org_id)
     if (not "file_ids" in file_info) or not client:
         logging.debug("Storing file_id of all clients in DB")
         log_msg=await send_file(StreamBot, file_info['file_id'])
-        await db.update_file_ids(db_id, await update_file_id(log_msg.id, multi_clients))
+        await db.update_file_ids(org_id, await update_file_id(log_msg.id, multi_clients))
         logging.debug("Stored file_id of all clients in DB")
         if not client:
             return
-        file_info = await db.get_file(db_id)
+        file_info = await db.get_file(org_id)
 
     file_id_info=file_info.setdefault("file_ids", {})
     if not str(client.id) in file_id_info:
@@ -31,7 +32,7 @@ async def get_file_ids(client: Client | bool, db_id: str, multi_clients, index=N
         msg=await client.get_messages(Var.BIN_CHANNEL,log_msg.id)
         media = get_media_from_message(msg)
         file_id_info[str(client.id)]=getattr(media, "file_id", "")
-        await db.update_file_ids(db_id, file_id_info)
+        await db.update_file_ids(org_id, file_id_info)
         logging.debug("Stored file_id in DB")
 
     logging.debug("Middle of get_file_ids")

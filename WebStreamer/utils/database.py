@@ -5,7 +5,9 @@ import time
 import motor.motor_asyncio
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
-from WebStreamer.server.exceptions import FIleNotFound
+from aiohttp import web
+from WebStreamer.server.exceptions import FIleNotFound, FIleExpired
+from WebStreamer.vars import Var
 
 class Database:
     def __init__(self, uri, database_name):
@@ -14,6 +16,7 @@ class Database:
         self.col = self.db.users
         self.black = self.db.blacklist
         self.file = self.db.file
+        self.dl = self.db.dl
 
 # ----------------------add ,check or remove user----------------------
     def new_user(self, id):
@@ -137,3 +140,13 @@ class Database:
             await self.col.update_one({"id": id}, {"$inc": {"Links": -1}})
         elif operation == "+":
             await self.col.update_one({"id": id}, {"$inc": {"Links": 1}})
+    
+    async def get_file_id(self, id):
+        file_id = await self.dl.find_one({"_id": ObjectId(id)})
+        if not file_id:
+            id2=await self.file.find_one({"dl_id": ObjectId(id)})
+            if id2:
+                raise FIleExpired(text="<a href={}>Link Expired. Please Generate a New Link by Visiting Player Page<br>{}</a>".format(Var.DLURL+str(id2["_id"]), Var.DLURL+str(id2["_id"])))
+            else:
+                raise FIleNotFound
+        return file_id["id"]

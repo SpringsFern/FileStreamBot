@@ -10,7 +10,7 @@ from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from WebStreamer.bot import multi_clients, work_loads, StreamBot
 from WebStreamer.vars import Var
-from WebStreamer.server.exceptions import FIleNotFound, InvalidHash
+from WebStreamer.server.exceptions import FIleNotFound, InvalidHash, FIleExpired
 from WebStreamer import utils, StartTime, __version__
 from WebStreamer.utils.render_template import render_page
 routes = web.RouteTableDef()
@@ -33,21 +33,6 @@ async def root_route_handler(_):
         }
     )
 
-@routes.get("/watch/{path}", allow_head=True)
-async def stream_handler(request: web.Request):
-    try:
-        path = request.match_info["path"]
-        return web.Response(text=await render_page(path), content_type='text/html')
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
-    except FIleNotFound as e:
-        raise web.HTTPNotFound(text=e.message)
-    except (AttributeError, BadStatusLine, ConnectionResetError):
-        pass
-    # except Exception as e:
-    #     logging.critical(e.with_traceback(None))
-    #     raise web.HTTPInternalServerError(text=str(e))
-
 @routes.get("/dl/{path}", allow_head=True)
 async def stream_handler(request: web.Request):
     try:
@@ -59,6 +44,8 @@ async def stream_handler(request: web.Request):
         raise web.HTTPNotFound(text=e.message)
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
+    except FIleExpired as e:
+        raise web.HTTPNotFound(text=e.message, content_type='text/html') 
     except Exception as e:
         traceback.print_exc()
         logging.critical(e.with_traceback(None))
