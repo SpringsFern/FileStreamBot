@@ -115,7 +115,6 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     else:
         file_type = "Unknown"
 
-    page_link = f"{Var.URL}watch/{myfile_info['_id']}"
     stream_link = f"{Var.URL}dl/{myfile_info['_id']}"
     TiMe=myfile_info['time']
     if type(TiMe) == float:
@@ -125,8 +124,7 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton("Back", callback_data="userfiles_{}".format(file_list_no)), InlineKeyboardButton("Delete Link", callback_data=f"msgdelconf2_{myfile_info['_id']}_{file_list_no}")],
-                [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)],
-                [InlineKeyboardButton("Get File", callback_data=f"sendfile_{myfile_info['_id']}")]
+                [InlineKeyboardButton("Open Link 📥", url=stream_link), InlineKeyboardButton("Get File", callback_data=f"sendfile_{myfile_info['_id']}")]
             ]
             )
         )

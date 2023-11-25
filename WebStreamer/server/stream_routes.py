@@ -12,7 +12,6 @@ from WebStreamer.bot import multi_clients, work_loads, StreamBot
 from WebStreamer.vars import Var
 from WebStreamer.server.exceptions import FIleNotFound, InvalidHash, FIleExpired
 from WebStreamer import utils, StartTime, __version__
-from WebStreamer.utils.render_template import render_page
 routes = web.RouteTableDef()
 
 @routes.get("/status", allow_head=True)

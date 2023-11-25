@@ -45,14 +45,11 @@ async def gen_link(m: Message, _id, name: list):
     lang = Language(m)
     file_name = get_name(m)
     file_size = humanbytes(get_media_file_size(m))
-    page_link = f"{Var.URL}watch/{_id}"
     
     stream_link = f"{Var.URL}dl/{_id}"
-    Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, page_link, name[0], name[1])
+    Stream_Text=lang.stream_msg_text.format(file_name, file_size, stream_link, name[0], name[1])
     reply_markup=InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("🖥STREAM", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]
-            ]
+        [[InlineKeyboardButton("Open Link 📥", url=stream_link)]]
         )
 
     return reply_markup, Stream_Text
