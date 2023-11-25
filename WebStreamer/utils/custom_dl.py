@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import heapq
 from typing import Dict, Union
 from WebStreamer.bot import work_loads
 from pyrogram import Client, utils, raw
@@ -49,7 +50,8 @@ class ByteStreamer:
         returns ths properties in a FIleId class.
         """
         logging.debug("Before calling get_file_ids")
-        index = min(work_loads, key=work_loads.get)
+        # index = min(work_loads, key=work_loads.get)
+        index = heapq.nsmallest(1, work_loads, key=work_loads.get)[0]
         file_id = await get_file_ids(multi_clients[index], db_id, multi_clients, index)
         logging.debug(f"Generated file ID and Unique ID for file with ID {db_id}")
         self.cached_file_ids[db_id] = file_id
