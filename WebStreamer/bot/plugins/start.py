@@ -1,5 +1,6 @@
 # This file is a part of FileStreamBot
 
+import json
 import logging
 import re
 import math
@@ -14,6 +15,7 @@ from WebStreamer.utils.Translation import Language, BUTTON
 from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.enums.parse_mode import ParseMode
+from pyrogram.enums.chat_action import ChatAction
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 url_pattern = re.compile(r'https?://dl\.tgxlink\.eu\.org/dl/([0-9a-fA-F]{24})')
@@ -181,3 +183,26 @@ Links Left: <code>{links}<code>
 
 For Additional Links Contact @DeekshithSH
 Note: This Plan Can be Changed at any time""")
+
+@StreamBot.on_message(filters.command('links') & filters.private)
+async def link_list(bot: Client, message: Message):
+    await message.reply_chat_action(ChatAction.TYPING)
+    user_files, total_files=await db.find_files(message.from_user.id, [1,10])
+    list_type=message.text.split()[-1]
+    list_type=list_type if list_type != "/links" else None
+    if list_type=="json":
+        file_list={}
+    else:
+        file_list=""
+    async for x in user_files:
+        if list_type == "json":
+            file_list[x["file_name"]]=Var.URL+"dl/"+str(x["_id"])
+        elif list_type == "link":
+            file_list+=f'\n\n{x["file_name"]} : {Var.URL+"dl/"+str(x["_id"])}'
+        else:
+            file_list+=f'\n<a href={Var.URL+"dl/"+str(x["_id"])}>{x["file_name"]}</a>'
+
+    if isinstance(file_list, dict):
+        file_list=json.dumps(file_list)
+    await message.reply_text(file_list, disable_web_page_preview=True)
+    await message.reply_chat_action(ChatAction.CANCEL)
