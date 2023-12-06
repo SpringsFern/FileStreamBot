@@ -56,8 +56,8 @@ async def private_receive_handler(bot: Client, message: Message):
             reply_markup=reply_markup,
             quote=True
         )
-        if ptype!="Plus":
-            await message.reply_text("Running a Bot is not Free, We Have to Pay for That\nSo Please try to purchase our paid plan or donate in anyway can")
+        # if ptype!="Plus":
+            # await message.reply_text("Running a Bot is not Free, We Have to Pay for That\nSo Please try to purchase our paid plan or donate in anyway can")
     except FloodWait as e:
         print(f"Sleeping for {str(e.value)}s")
         await asyncio.sleep(e.value)
