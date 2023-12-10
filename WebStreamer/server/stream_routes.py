@@ -23,10 +23,11 @@ async def root_route_handler(_):
             "telegram_bot": "@" + StreamBot.username,
             "connected_bots": len(multi_clients),
             "loads": dict(
-                ("bot" + str(c + 1), l)
-                for c, (_, l) in enumerate(
-                    sorted(work_loads.items(), key=lambda x: x[1], reverse=True)
-                )
+                ("bot" + str(c), l)
+                for c,  l in sorted(work_loads.items())
+                # for c, (_, l) in enumerate(
+            #         sorted(work_loads.items(), key=lambda x: x[1], reverse=True)
+            #     )
             ),
             "version": __version__,
         }
