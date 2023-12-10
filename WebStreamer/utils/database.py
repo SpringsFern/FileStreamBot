@@ -146,7 +146,7 @@ class Database:
         if not file_id:
             id2=await self.file.find_one({"dl_id": ObjectId(id)})
             if id2:
-                raise FIleExpired(text="<a href={}>Link Expired. Please Generate a New Link by Visiting Player Page<br>{}</a>".format(Var.DLURL+str(id2["_id"]), Var.DLURL+str(id2["_id"])))
+                raise FIleExpired(text="<a href={}>Link Expired. Please Generate a New Link by Visiting Player Page<br>{}</a>".format(Var.URL+str(id2["_id"]), Var.URL+str(id2["_id"])))
             else:
                 raise FIleNotFound
         return file_id["id"]

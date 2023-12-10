@@ -45,4 +45,3 @@ class Var(object):
     TN_API = environ.get('TN_API')
     MODE=environ.get("MODE", "primary")
     SECONDARY=True if MODE.lower() == "secondary" else False
-    DLURL=environ.get("DLURL")
