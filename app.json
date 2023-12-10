@@ -1,0 +1,104 @@
+{
+    "name": "File Stream Bot",
+    "description": "A Pyrogram Telegram bot to access Telegram Files via the web.",
+    "keywords": [
+        "telegram",
+        "web",
+        "pyrogram",
+        "aiohttp",
+        "python",
+        "plugin",
+        "modular",
+        "media"
+      ],
+    "repository": "https://github.com/SpringsFern/FileStreamBot",
+    "success_url": "/",
+    "website": "https://github.com/SpringsFern/FileStreamBot",
+    "env": {
+        "ENV": {
+            "description": "Set this to True if you don't want to crash the bot",
+            "value": "True"
+        },
+        "API_ID": {
+            "description": "Get this value from https://my.telegram.org"
+        },
+        "API_HASH": {
+            "description": "Get this value from https://my.telegram.org"
+        },
+        "BOT_TOKEN": {
+            "description": "Get this value from @BotFather"
+        },
+        "BIN_CHANNEL": {
+            "description": "The BIN Channel ID. Read the readme for more info about this var"
+        },
+        "DATABASE_URL": {
+            "description": "MongoDB URI eg: mongodb://admin:pAswaRd@192.168.27.1"
+        },
+        "SLEEP_THRESHOLD": {
+            "description": "Floodwait Sleep timer. Read the readme for more info about this var",
+            "required": false
+        },
+        "WORKERS": {
+            "description": "Number of workers that is to be assigned. Read the readme for more info about this var",
+            "required": false
+        },
+        "NO_PORT": {
+            "description": "If you don't want your port to be displayed. Read the readme for more info about this var",
+            "value": "False",
+            "required": false
+        },
+        "BIND_ADDRESS": {
+            "description": "Read the readme for more info about this var",
+            "required": false
+        },
+        "PING_INTERVAL": {
+            "description": "The time in s you want the servers to be pinged each time to avoid sleeping.",
+            "required": false
+        },
+        "FQDN": {
+            "description": "A Fully Qualified Domain Name or Heroku App URL. (eg. https://example.herokuapp.com). Update it After Deploying the Bot",
+            "required": false
+        },
+        "HAS_SSL": {
+            "description": "Don't Change It",
+            "value": "True"
+        },
+        "OWNER_ID": {
+            "description": "Your Telegram User ID(Note: Not Username)"
+        },
+        "UPDATES_CHANNEL": {
+            "description": "Update Channel Username without @ eg: AWeirdText",
+            "required": false
+        },
+        "FORCE_UPDATES_CHANNEL": {
+            "description": "Set to True, if you want every user Join update channel to use the bot",
+            "required": false
+        },
+        "SESSION_NAME": {
+            "description": "Mongodb Database Name Default to F2LxBot",
+            "required": false
+        },
+        "KEEP_ALIVE" : {
+            "description": "If you want to make the server ping itself every `PING_INTERVAL` seconds to avoid sleeping. Helpful in PaaS Free tiers. Defaults to `False`",
+            "required": false,
+            "value": "True"
+        },
+        "TOS": {
+            "description": "URL to your Terms of Service Text",
+            "required": false
+        },
+        "LINK_LIMIT": {
+            "description": "Limit Number of Links a User Can Generate. Value should be a Number",
+            "required": false
+        }
+    },
+    "buildpacks": [{
+        "url": "heroku/python"
+      }],
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "Eco"
+        }
+    }
+  }

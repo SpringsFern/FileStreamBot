@@ -61,6 +61,14 @@ The main working part was taken from [Megatron](https://github.com/eyaadh/megadl
 
 <!-- Host the bot on VPS or Locally -->
 
+### Deploy on Heroku
+
+Press the below button to fast deploy to Heroku
+
+- [![Deploy To Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+then goto the <a href="#mandatory-vars">variables tab</a> for more info on setting up environmental variables.
+
 ### Host it on VPS or Locally
 
 ```sh
@@ -150,7 +158,7 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `UPDATES_CHANNEL` : Your Telegram Channel Username without @
 
-`FORCE_UPDATES_CHANNEL` : Set to True, To force every user have to Join update channel to use the bot.
+`FORCE_UPDATES_CHANNEL` : Set to True, if you want every user Join update channel to use the bot.
 
 `SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
 
