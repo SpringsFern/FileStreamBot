@@ -46,7 +46,7 @@
 
 <p align="center">
     <a herf="https://github.com/DeekshithSH/FileStreamBot">
-        <img src="https://www.flaticon.com/premium-icon/icons/svg/2626/2626281.svg" height="100" width="100" alt="Telegram Logo">
+        <img src="https://telegra.ph/file/a8bb3f6b334ad1200ddb4.png" height="100" width="100" alt="Telegram Logo">
     </a>
 </p>
 <p align='center'>
@@ -150,18 +150,21 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `UPDATES_CHANNEL` : Your Telegram Channel Username without @
 
-`FORCE_UPDATES_CHANNEL` : Set to True, so every user have to Join update channel to use the bot.
+`FORCE_UPDATES_CHANNEL` : Set to True, To force every user have to Join update channel to use the bot.
 
 `SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
 
 `BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
 
-`KEEP_ALIVE` : If you want to make the server ping itself every `PING_INTERVAL` seconds to avoid sleeping. Helpful in PaaS Free tiers. Defaults to `False`
+`KEEP_ALIVE` : If you want to make the server ping itself every
+
 `IMAGE_FILEID` : Photo to send with /myfiles command. Put file_id to send a photo that exists on the Telegram servers or Put an HTTP URL to get a photo from the Internet
 
 `TOS` : URL to your Terms of Service Text
 
 `MODE` should be set to secondary if you only want to use the server for serving files
+
+`LINK_LIMIT`: Limit Number of Links a User Can Generate. Value should be a Number
 
 ## How to use the bot
 

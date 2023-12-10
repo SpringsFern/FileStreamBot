@@ -4,7 +4,7 @@
 import asyncio
 from WebStreamer.utils.Translation import Language
 from WebStreamer.bot import StreamBot, multi_clients
-from WebStreamer.utils.bot_utils import is_user_accepted_tos, is_user_banned, is_user_exist, is_user_joined, gen_link
+from WebStreamer.utils.bot_utils import gen_link, validate_user
 from WebStreamer.utils.database import Database
 from WebStreamer.utils.file_properties import get_file_ids, get_file_info
 from WebStreamer.vars import Var
@@ -30,21 +30,12 @@ db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 )
 async def private_receive_handler(bot: Client, message: Message):
     lang = Language(message)
-    # Check The User is Banned or Not
-    if await is_user_banned(message, lang):
+    if not await validate_user(message, lang):
         return
-    await is_user_exist(bot, message)
-    if Var.TOS:
-        if not await is_user_accepted_tos(message):
-            return
-    if Var.FORCE_UPDATES_CHANNEL:
-        if not await is_user_joined(bot,message,lang):
-            return
     try:
         ptype=await db.link_available(message.from_user.id)
         if not (ptype):
-            await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Generate More Links\nPaid link will cost INR ₹50 per month\nNote: This Plan Can be Changed at any time\nYou can also Delete Old links through /myfiles to Generate New Links")
-            return await message.reply_text("Running a Bot is not Free, We Have to Pay for That")
+            return await message.reply_text(lang.LINK_LIMIT_EXCEEDED)
 
         inserted_id=await db.add_file(get_file_info(message))
         await get_file_ids(False, inserted_id, multi_clients)
@@ -56,8 +47,6 @@ async def private_receive_handler(bot: Client, message: Message):
             reply_markup=reply_markup,
             quote=True
         )
-        if ptype!="Plus":
-            await message.reply_text("Running a Bot is not Free, We Have to Pay for That\nSo Please try to purchase our paid plan or donate in anyway can")
     except FloodWait as e:
         print(f"Sleeping for {str(e.value)}s")
         await asyncio.sleep(e.value)

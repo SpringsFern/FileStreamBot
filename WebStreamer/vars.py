@@ -42,6 +42,6 @@ class Var(object):
         data = response.read().decode('utf-8')
         TOS = data.strip()
 
-    TN_API = environ.get('TN_API')
-    MODE=environ.get("MODE", "primary")
-    SECONDARY=True if MODE.lower() == "secondary" else False
+    MODE = environ.get("MODE", "primary")
+    SECONDARY = True if MODE.lower() == "secondary" else False
+    LINK_LIMIT = int(environ.get("LINK_LIMIT")) if "LINK_LIMIT" in environ else None
