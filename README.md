@@ -54,6 +54,7 @@
 </p>
 
 ### Original Repository
+[FileStreamBot](https://github.com/SpringsFern/FileStreamBot) is a Modified Version of [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot) by [EverythingSuckz](https://github.com/EverythingSuckz/)
 
 The main working part was taken from [Megatron](https://github.com/eyaadh/megadlbot_oss) and thanks to [eyaadh](https://github.com/eyaadh) for his awesome project.
 
@@ -202,7 +203,7 @@ You can contact either via my [Telegram Group](https://xn--r1a.click/AWeirdStrin
 ## Credits
 
 - [Me](https://xn--r1a.click/DeekshithSH)
-- [EverythingSuckz](https://github.com/EverythingSuckz) for his [FileStreamBot](https://github.com/EverythingSuckz/FileStreamBot)
+- [EverythingSuckz](https://github.com/EverythingSuckz) for his [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot)
 - [Avishkar Patil](https://github.com/avipatilpro) for his [FileStreamBot](https://github.com/avipatilpro/FileStreamBot)
 - [eyaadh](https://github.com/eyaadh) for his awesome [Megatron Bot](https://github.com/eyaadh/megadlbot_oss).
 - [BlackStone](https://github.com/eyMarv) for adding multi-client support.
