@@ -5,7 +5,6 @@ import time
 import motor.motor_asyncio
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
-from aiohttp import web
 from WebStreamer.server.exceptions import FIleNotFound, FIleExpired
 from WebStreamer.vars import Var
 
@@ -85,7 +84,6 @@ class Database:
         fetch_old = await self.get_file_by_fileuniqueid(file_info["user_id"], file_info["file_unique_id"])
         if fetch_old:
             return fetch_old["_id"]
-        await self.count_links(file_info["user_id"], "+")
         return (await self.file.insert_one(file_info)).inserted_id
 
     async def find_files(self, user_id, range):
@@ -131,15 +129,9 @@ class Database:
             return "Plus"
         elif user.get("Plan") == "Free":
             files = await self.file.count_documents({"user_id": id})
-            if files < 11:
+            if files < 21:
                 return True
             return False
-        
-    async def count_links(self, id, operation: str):
-        if operation == "-":
-            await self.col.update_one({"id": id}, {"$inc": {"Links": -1}})
-        elif operation == "+":
-            await self.col.update_one({"id": id}, {"$inc": {"Links": 1}})
     
     async def get_file_id(self, id):
         file_id = await self.dl.find_one({"_id": ObjectId(id)})
