@@ -41,12 +41,11 @@ async def private_receive_handler(bot: Client, message: Message):
         if not await is_user_joined(bot,message,lang):
             return
     try:
-        ptype=await db.link_available(message.from_user.id)
-        if not (ptype):
-            await message.reply_text("You Have Exceeded the Number of links you can generate\nContact @DeekshithSH to Generate More Links\nPaid link will cost INR ₹50 per month\nNote: This Plan Can be Changed at any time\nYou can also Delete Old links through /myfiles to Generate New Links")
-            return await message.reply_text("Running a Bot is not Free, We Have to Pay for That")
-
-        inserted_id=await db.add_file(get_file_info(message))
+        links=await db.link_available(message.from_user.id)
+        file_info=get_file_info(message)
+        if links > 10:
+            file_info["ads"]=True
+        inserted_id=await db.add_file(file_info)
         await get_file_ids(False, inserted_id, multi_clients)
         reply_markup, Stream_Text = await gen_link(m=message, _id=inserted_id, name=[StreamBot.username, StreamBot.fname])
         await message.reply_text(

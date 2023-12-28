@@ -168,21 +168,15 @@ async def file_from_link(bot: Client, message: Message):
 async def tos(bot: Client, message: Message):
     i_cmd=message.text.split()
     if (message.from_user.id == Var.OWNER_ID) and (len(i_cmd) > 1):
-        user = await db.get_user(int(i_cmd[2]))
-        files=await db.total_files(int(i_cmd[2]))
+        user = await db.get_user(int(i_cmd[1]))
+        files=await db.total_files(int(i_cmd[1]))
     else:
         user = await db.get_user(message.from_user.id)
         files=await db.total_files(message.from_user.id)
-    links="N/A"
-    if user.get("Plan") == "Free":
-        links=20-user.get("Links")
+
     await message.reply_text(f"""User ID: <code>{message.from_user.id}</code>
 Plan: <code>{user.get("Plan")}</code>
-Links Used: <code>{files}</code>
-Links Left: <code>{links}<code>
-
-For Additional Links Contact @DeekshithSH
-Note: This Plan Can be Changed at any time""")
+Links Used: <code>{files}</code>""")
 
 @StreamBot.on_message(filters.command('links') & filters.private)
 async def link_list(bot: Client, message: Message):

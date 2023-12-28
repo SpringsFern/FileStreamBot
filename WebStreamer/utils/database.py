@@ -126,12 +126,9 @@ class Database:
     async def link_available(self, id):
         user = await self.col.find_one({"id": id})
         if user.get("Plan") == "Plus":
-            return "Plus"
+            return 1
         elif user.get("Plan") == "Free":
-            files = await self.file.count_documents({"user_id": id})
-            if files < 21:
-                return True
-            return False
+            return await self.file.count_documents({"user_id": id})
     
     async def get_file_id(self, id):
         file_id = await self.dl.find_one({"_id": ObjectId(id)})
