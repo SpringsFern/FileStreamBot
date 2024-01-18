@@ -109,23 +109,20 @@ HAS_SSL=False
 MULTI_TOKEN1=55838383:yourfirstmulticlientbottokenhere
 MULTI_TOKEN2=55838383:yoursecondmulticlientbottokenhere
 MULTI_TOKEN3=55838383:yourthirdmulticlientbottokenhere
-OWNER_ID=777000
 PORT=8080
 ```
 
 ### Mandatory Vars
 
-`API_ID` : Goto [my.telegram.org](https://my.telegram.org) to obtain this.
+- `API_ID` : Goto [my.telegram.org](https://my.telegram.org) to obtain this.
 
-`API_HASH` : Goto [my.telegram.org](https://my.telegram.org) to obtain this.
+- `API_HASH` : Goto [my.telegram.org](https://my.telegram.org) to obtain this.
 
-`BOT_TOKEN` : Get the bot token from [@BotFather](https://telegram.dog/BotFather)
+- `BOT_TOKEN` : Get the bot token from [@BotFather](https://telegram.dog/BotFather)
 
-`BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `/id`. Now copy paste the forwarded channel ID in this field. 
+- `BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `/id`. Now copy paste the forwarded channel ID in this field. 
 
-`OWNER_ID` : Your Telegram User ID, Send `/id` to [@missrose_bot](https://telegram.dog/MissRose_bot) to get Your Telegram User ID
-
-`DATABASE_URL` : MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in [Me Telegram](https://t.me/Avishkarpatil).
+- `DATABASE_URL` : MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in [Me Telegram](https://t.me/Avishkarpatil).
 
 ### For MultiClient
 
@@ -140,39 +137,32 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 ### Optional Vars
 
-`SLEEP_THRESHOLD` : Set a sleep threshold for flood wait exceptions happening globally in this telegram bot instance, below which any request that raises a flood wait will be automatically invoked again after sleeping for the required amount of time. Flood wait exceptions requiring higher waiting times will be raised. Defaults to 60 seconds.
+- `ALLOWED_USERS`: The user Telegram IDs of users to which the bot only reply to.
+> **Note**
+> Leave this field empty and anyone will be able to use your bot instance.
+> You may also add multiple users by adding the IDs separated by comma (,)
 
-`WORKERS` : Number of maximum concurrent workers for handling incoming updates. Defaults to `3`
+- `SLEEP_THRESHOLD` : Set a sleep threshold for flood wait exceptions happening globally in this telegram bot instance, below which any request that raises a flood wait will be automatically invoked again after sleeping for the required amount of time. Flood wait exceptions requiring higher waiting times will be raised. Defaults to 60 seconds.
 
-`PORT` : The port that you want your webapp to be listened to. Defaults to `8080`
+- `WORKERS` : Number of maximum concurrent workers for handling incoming updates. Defaults to `3`
 
-`WEB_SERVER_BIND_ADDRESS` : Your server bind address. Defauls to `0.0.0.0`
+- `PORT` : The port that you want your webapp to be listened to. Defaults to `8080`
 
-`NO_PORT` : (can be either `True` or `False`) If you don't want your port to be displayed. You should point your `PORT` to `80` (http) or `443` (https) for the links to work. Ignore this if you're on Heroku.
+- `WEB_SERVER_BIND_ADDRESS` : Your server bind address. Defauls to `0.0.0.0`
 
-`FQDN` :  A Fully Qualified Domain Name if present. Defaults to `WEB_SERVER_BIND_ADDRESS`
+- `NO_PORT` : (can be either `True` or `False`) If you don't want your port to be displayed. You should point your `PORT` to `80` (http) or `443` (https) for the links to work. Ignore this if you're on Heroku.
 
-`HAS_SSL` : (can be either `True` or `False`) If you want the generated links in https format.
+- `FQDN` :  A Fully Qualified Domain Name if present. Defaults to `WEB_SERVER_BIND_ADDRESS`
 
-`PING_INTERVAL` : The time in ms you want the servers to be pinged each time to avoid sleeping (Only for Heroku). Defaults to `1200` or 20 minutes.
+- `HAS_SSL` : (can be either `True` or `False`) If you want the generated links in https format.
 
-`UPDATES_CHANNEL` : Your Telegram Channel Username without @
+- `PING_INTERVAL` : The time in ms you want the servers to be pinged each time to avoid sleeping (Only for Heroku). Defaults to `1200` or 20 minutes.
 
-`FORCE_UPDATES_CHANNEL` : Set to True, if you want every user Join update channel to use the bot.
+- `SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
 
-`SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
+- `KEEP_ALIVE` : If you want to make the server ping itself every
 
-`BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
-
-`KEEP_ALIVE` : If you want to make the server ping itself every
-
-`IMAGE_FILEID` : Photo to send with /myfiles command. Put file_id to send a photo that exists on the Telegram servers or Put an HTTP URL to get a photo from the Internet
-
-`TOS` : URL to your Terms of Service Text
-
-`MODE` should be set to secondary if you only want to use the server for serving files
-
-`LINK_LIMIT`: Limit Number of Links a User Can Generate. Value should be a Number
+- `IMAGE_FILEID` : Photo to send with /myfiles command. Put file_id to send a photo that exists on the Telegram servers or Put an HTTP URL to get a photo from the Internet
 
 ## How to use the bot
 

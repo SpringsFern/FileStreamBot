@@ -10,7 +10,7 @@ from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from WebStreamer.bot import multi_clients, work_loads, StreamBot
 from WebStreamer.vars import Var
-from WebStreamer.server.exceptions import FIleNotFound, InvalidHash
+from WebStreamer.server.exceptions import FIleNotFound
 from WebStreamer import utils, StartTime, __version__
 from WebStreamer.utils.render_template import render_page
 
@@ -40,8 +40,6 @@ async def stream_handler(request: web.Request):
     try:
         path = request.match_info["path"]
         return web.Response(text=await render_page(path), content_type='text/html')
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
     except FIleNotFound as e:
         raise web.HTTPNotFound(text=e.message)
     except (AttributeError, BadStatusLine, ConnectionResetError):
@@ -56,8 +54,6 @@ async def stream_handler(request: web.Request):
     try:
         path = request.match_info["path"]
         return await media_streamer(request, path)
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
     except FIleNotFound as e:
         raise web.HTTPNotFound(text=e.message)
     except (AttributeError, BadStatusLine, ConnectionResetError):
@@ -125,9 +121,6 @@ async def media_streamer(request: web.Request, db_id: str):
 
     if not mime_type:
         mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
-
-    # if "video/" in mime_type or "audio/" in mime_type:
-    #     disposition = "inline"
 
     return web.Response(
         status=206 if range_header else 200,

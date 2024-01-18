@@ -17,9 +17,9 @@ async def initialize_clients():
             )
         )
     )
+    multi_clients[0] = StreamBot
+    work_loads[0] = 0
     if not all_tokens:
-        multi_clients[0] = StreamBot
-        work_loads[0] = 0
         print("No additional clients found, using default client")
         return
     

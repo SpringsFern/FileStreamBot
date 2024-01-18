@@ -35,17 +35,11 @@ loop = asyncio.get_event_loop()
 
 async def start_services():
     print()
-    if Var.SECONDARY:
-        print("------------------ Starting as Secondary Server ------------------")
-    else:
-        print("------------------- Starting as Primary Server -------------------")
-    print()
     print("-------------------- Initializing Telegram Bot --------------------")
     await StreamBot.start()
     bot_info = await StreamBot.get_me()
     StreamBot.id = bot_info.id
     StreamBot.username = bot_info.username
-    StreamBot.fname=bot_info.first_name
     print("------------------------------ DONE ------------------------------")
     print()
     print("---------------------- Initializing Clients ----------------------")

@@ -25,7 +25,7 @@ async def cb_data(bot, update: CallbackQuery):
         )
     elif usr_cmd[0] == "help":
         await update.message.edit_text(
-            text=lang.HELP_TEXT.format(Var.UPDATES_CHANNEL),
+            text=lang.HELP_TEXT,
             disable_web_page_preview=True,
             reply_markup=BUTTON.HELP_BUTTONS
         )
@@ -56,9 +56,6 @@ async def cb_data(bot, update: CallbackQuery):
     elif usr_cmd[0] == "myfile":
         await gen_file_menu(usr_cmd[1], usr_cmd[2], update)
         return
-    elif usr_cmd[0] == "accepttos":
-        await db.agreed_tos(int(usr_cmd[1]))
-        await update.edit_message_reply_markup(reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✅ I accepted the TOS", callback_data="N/A")]]))
     elif usr_cmd[0] == "sendfile":
         myfile = await db.get_file(usr_cmd[1])
         await update.answer(f"Sending File {myfile['file_name']}")

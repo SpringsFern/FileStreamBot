@@ -63,17 +63,6 @@
             "description": "Don't Change It",
             "value": "True"
         },
-        "OWNER_ID": {
-            "description": "Your Telegram User ID(Note: Not Username)"
-        },
-        "UPDATES_CHANNEL": {
-            "description": "Update Channel Username without @ eg: AWeirdText",
-            "required": false
-        },
-        "FORCE_UPDATES_CHANNEL": {
-            "description": "Set to True, if you want every user Join update channel to use the bot",
-            "required": false
-        },
         "SESSION_NAME": {
             "description": "Mongodb Database Name Default to F2LxBot",
             "required": false
@@ -82,14 +71,6 @@
             "description": "If you want to make the server ping itself every `PING_INTERVAL` seconds to avoid sleeping. Helpful in PaaS Free tiers. Defaults to `False`",
             "required": false,
             "value": "True"
-        },
-        "TOS": {
-            "description": "URL to your Terms of Service Text",
-            "required": false
-        },
-        "LINK_LIMIT": {
-            "description": "Limit Number of Links a User Can Generate. Value should be a Number",
-            "required": false
         }
     },
     "buildpacks": [{
