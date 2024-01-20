@@ -1,0 +1,17 @@
+services:
+  fsb:
+      build: .
+      restart: unless-stopped
+      container_name: fsb
+      environment:
+      # required
+       - API_ID=0 # change this to your ID
+       - API_HASH=e83e839202 # change this to your HASH
+       - BOT_TOKEN=token # enter your bot token
+       - BIN_CHANNEL=ID # paste channel ID
+       - DATABASE_URL=MongoDB_URI # Enter your MongoDB URL
+       - FQDN=example.com # enter your Custom Domain or Server IP Address
+       - ALLOWED_USERS=@DeekshithSH,849816969 # Replace it with Allowed Users UserID or Username
+       - PORT=8000 # Replace it with your Port
+      ports:
+       - 0.0.0.0:8000:8000

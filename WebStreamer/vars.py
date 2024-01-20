@@ -28,7 +28,6 @@ class Var(object):
 
     DATABASE_URL = str(environ.get('DATABASE_URL'))
     SESSION_NAME = str(environ.get('SESSION_NAME', 'F2LxBot'))
-
     ALLOWED_USERS = [x.strip("@ ") for x in str(environ.get("ALLOWED_USERS", "") or "").split(",") if x.strip("@ ")]
     KEEP_ALIVE = str(environ.get("KEEP_ALIVE", "0").lower()) in  ("1", "true", "t", "yes", "y")
     IMAGE_FILEID = environ.get('IMAGE_FILEID', "https://deekshith.eu.org/static/MyFiles.png")

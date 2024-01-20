@@ -31,7 +31,7 @@ async def gen_link(m: Message, _id) -> tuple[InlineKeyboardMarkup, str]:
 
 async def validate_user(message: Message, lang) -> bool:
     if Var.ALLOWED_USERS and not ((str(message.from_user.id) in Var.ALLOWED_USERS) or (message.from_user.username in Var.ALLOWED_USERS)):
-        await message.reply("You are not <b>allowed to use</b> this <a href='https://github.com/EverythingSuckz/TG-FileStreamBot'>bot</a>.", quote=True)
+        await message.reply("You are not <b>allowed to use this bot", quote=True)
         return False
     return True
 
