@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player</title>
+    {{hides|safe}}
+    <link rel="stylesheet" href="https://unpkg.com/video.js/dist/video-js.css">
+    <script src="https://unpkg.com/video.js/dist/video.js"></script> {{hidee|safe}}
+    <script>
+        function toClipboard() {
+            navigator.clipboard.writeText("{{download_link}}")
+            snackbar('Link Copied to Clipboard')
+        }
+        function snackbar(text) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = text;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); x.innerHTML = ""; }, 3000);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="snackbar"></div>
+
+    {{hides|safe}}<div>
+        <{{tag}} id="videoPlayer" class="video-js vjs-default-skin" controls data-setup='{"fluid": true}'>
+            <source src="{{source_link}}" type="video/mp4">
+        </{{tag}}>
+    </div>{{hidee|safe}}
+    <div>
+        <div>
+            <p>{{file_name}}</p>
+        </div>
+        <hr>
+        <div>
+            <a href="{{download_link}}">
+                <div>
+                    <p>Download</p>
+                </div>
+            </a>
+            <div onclick="toClipboard();">
+                <p>Copy Link</p>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div>
+                <p>File Name: : {{file_name}}</p>
+            </div>
+            <div>
+                <p>File Size : {{file_size}}</p>
+            </div>
+            <div>
+                <p>Uploaded By : <a href="tg://user?id={{user_id}}">{{user_id}}</a></p>
+            </div>
+            <div>
+                <p>Uploaded On : {{time}}</p>
+            </div>
+        </div>
+    </div>
+    {{hides|safe}}
+    <script>
+        var player = videojs('videoPlayer', {
+            userActions: { hotkeys: true },
+            playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+            controlBar: { skipButtons: { forward: 10, backward: 10 } }
+        });
+    </script>{{hidee|safe}}
+</body>
+
+</html>

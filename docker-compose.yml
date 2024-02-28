@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+
+  WebServer_app: &app
+    tty: true
+    cap_add:
+     - SYS_PTRACE
+    build:
+      context: .
+      args:
+        requirements: requirements/development.txt
+    container_name: WebServer
+    environment:
+      # use in code
+      - DEBUG=True
+      - SETTINGS_FILE=api.dev.yml
+      - PYTHONUNBUFFERED=1
+    restart: always
+    volumes:
+      - .:/app:delegated
+    ports:
+      - 8080:8080
+      - 8081:8081
+    command: make adev
+
+  test:
+    <<: *app
+    container_name: WebServer_test
+    ports:
+      - 8082:8082
+    entrypoint: py.test -v -p no:warnings
+    command: ''

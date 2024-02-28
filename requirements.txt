@@ -1,0 +1,8 @@
+aiohttp
+aiohttp_jinja2
+trafaret_config
+python-dotenv
+motor
+dnspython
+Gunicorn
+requests
