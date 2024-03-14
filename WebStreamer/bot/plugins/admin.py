@@ -28,15 +28,19 @@ async def sts(c: Client, m: Message):
 
 @StreamBot.on_message(filters.command("ban") & filters.private & filters.user(Var.OWNER_ID))
 async def sts(b, m: Message):
-    id = m.text.split("/ban ")[-1]
+    split_text = m.text.split(maxsplit=2)
+    reason="Not mentioned" if split_text[-1].isdigit() else split_text[-1]
+    if not split_text[1].isdigit():
+        return
+    id=split_text[1]
     if not await db.is_user_banned(int(id)):
         try:
-            await db.ban_user(int(id))
+            await db.ban_user(int(id), reason)
             await db.delete_user(int(id))
-            await m.reply_text(text=f"`{id}`** is Banned** ", parse_mode=ParseMode.MARKDOWN, quote=True)
+            await m.reply_text(text=f"`{id}`** is Banned** \nReason: {reason}", parse_mode=ParseMode.MARKDOWN, quote=True)
             await b.send_message(
                 chat_id=id,
-                text="**Your Banned to Use The Bot**",
+                text=f"**Your Banned to Use The Bot** \nReason: {reason}",
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=True
             )

@@ -57,15 +57,17 @@ class Database:
         )
 
 # ----------------------ban, check banned or unban user----------------------
-    def black_user(self, id):
+    def black_user(self, id, reason):
         return dict(
             id=id,
-            ban_date=time.time()
+            ban_date=time.time(),
+            reason=reason
         )
 
-    async def ban_user(self, id):
-        user = self.black_user(id)
+    async def ban_user(self, id, reason):
+        user = self.black_user(id, reason)
         await self.black.insert_one(user)
+        await self.file.update_many({"user_id": id}, {"$set": {"restricted": True}})
 
     async def unban_user(self, id):
         await self.black.delete_one({'id': int(id)})
