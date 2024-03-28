@@ -89,13 +89,24 @@ async def is_user_accepted_tos(message: Message) -> bool:
         return False
     return True
 
-async def validate_user(message: Message, lang) -> bool:
-    if await is_user_banned(message, lang):
+async def is_allowed(message: Message):
+    if Var.ALLOWED_USERS and not ((str(message.from_user.id) in Var.ALLOWED_USERS) or (message.from_user.username in Var.ALLOWED_USERS)):
+        await message.reply("You are not in the allowed list of users who can use me.", quote=True)
+        return False
+    return True
+
+async def validate_user(message: Message, lang=None) -> bool:
+    if not await is_allowed(message):
         return False
     await is_user_exist(message)
     if Var.TOS:
         if not await is_user_accepted_tos(message):
             return False
+
+    if not lang:
+        lang = Language(message)
+    if await is_user_banned(message, lang):
+        return False
     if Var.FORCE_UPDATES_CHANNEL:
         if not await is_user_joined(message,lang):
             return False

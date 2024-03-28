@@ -56,6 +56,8 @@ async def help_handler(bot, message):
 
 @StreamBot.on_message(filters.command('myfiles') & filters.private)
 async def my_files(bot: Client, message: Message):
+    if not await validate_user(message):
+        return
     user_files, total_files=await db.find_files(message.from_user.id, [1,10])
 
     file_list=[]
@@ -89,6 +91,8 @@ async def tos_handler(bot: Client, message: Message):
 @StreamBot.on_message(filters.command('info') & filters.private)
 async def info_handler(bot: Client, message: Message):
     lang = Language(message)
+    if not await validate_user(message, lang):
+        return
     i_cmd=message.text.split()
     if (message.from_user.id == Var.OWNER_ID) and (len(i_cmd) > 1):
         message.from_user.id=int(i_cmd[1])
@@ -101,6 +105,8 @@ async def info_handler(bot: Client, message: Message):
 
 @StreamBot.on_message(filters.command('getfile') & filters.private & filters.user(Var.OWNER_ID))
 async def getfile(bot: Client, message: Message):
+    if not await validate_user(message):
+        return
     usr_cmd=message.text.split()
     if len(usr_cmd) < 2:
         return await message.reply_text("Invalid Format\nUsage: `/getfile _id`")

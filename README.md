@@ -163,7 +163,10 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
 
-`BANNED_CHANNELS` : Put IDs of Banned Channels where bot will not work. You can add multiple IDs & separate with <kbd>Space</kbd>.
+`ALLOWED_USERS`: The user Telegram IDs of users to which the bot only reply to.
+> **Note**
+> Leave this field empty and anyone will be able to use your bot instance.
+> You may also add multiple users by adding the IDs separated by comma (,)
 
 `KEEP_ALIVE` : If you want to make the server ping itself every
 
