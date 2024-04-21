@@ -141,3 +141,9 @@ class Database:
             else:
                 raise FIleNotFound
         return file_id["id"]
+    
+    async def increment_dl_count(self, org_id: ObjectId):
+        await self.file.update_one(
+            {"_id": org_id },
+            { "$inc": { "dl_count": +1} }
+        )

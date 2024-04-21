@@ -12,6 +12,7 @@ from WebStreamer.bot import multi_clients, work_loads, StreamBot
 from WebStreamer.vars import Var
 from WebStreamer.server.exceptions import FIleNotFound, InvalidHash, FIleExpired
 from WebStreamer import utils, StartTime, __version__
+from WebStreamer.utils.bot_utils import db
 routes = web.RouteTableDef()
 
 @routes.get("/status", allow_head=True)
@@ -80,6 +81,10 @@ async def media_streamer(request: web.Request, db_id: str):
     else:
         from_bytes = request.http_range.start or 0
         until_bytes = (request.http_range.stop or file_size) - 1
+    
+    print(f"from_bytes: {from_bytes} until_bytes: {until_bytes}")
+    if from_bytes <10 and until_bytes >200:
+        await db.increment_dl_count(file_id.org_id)
 
     if (until_bytes > file_size) or (from_bytes < 0) or (until_bytes < from_bytes):
         return web.Response(
