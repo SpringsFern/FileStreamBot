@@ -82,7 +82,7 @@ async def media_streamer(request: web.Request, db_id: str):
         from_bytes = request.http_range.start or 0
         until_bytes = (request.http_range.stop or file_size) - 1
     
-    print(f"from_bytes: {from_bytes} until_bytes: {until_bytes}")
+    logging.debug(f"from_bytes: {from_bytes} until_bytes: {until_bytes}")
     if from_bytes <10 and until_bytes >200:
         await db.increment_dl_count(file_id.org_id)
 
