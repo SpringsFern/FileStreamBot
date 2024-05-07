@@ -135,16 +135,3 @@ class Database:
 # ----------[Update FileID List]----------
     async def update_file_ids(self, _id, file_ids: dict):
         await self.file.update_one({"_id": ObjectId(_id)}, {"$set": {"file_ids": file_ids}})
-
-# ----------[Links Left]----------
-    async def link_available(self, id):
-        if not Var.LINK_LIMIT:
-            return True
-        user = await self.col.find_one({"id": id})
-        if user.get("Plan") == "Plus":
-            return "Plus"
-        elif user.get("Plan") == "Free":
-            files = await self.file.count_documents({"user_id": id})
-            if files <= Var.LINK_LIMIT:
-                return True
-            return False

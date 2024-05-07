@@ -176,8 +176,6 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `MODE` should be set to secondary if you only want to use the server for serving files
 
-`LINK_LIMIT`: Limit Number of Links a User Can Generate. Value should be a Number
-
 ## How to use the bot
 
 :warning: **Before using the  bot, don't forget to add all the bots (multi-client ones too) to the `BIN_CHANNEL` as an admin**

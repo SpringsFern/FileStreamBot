@@ -1,14 +1,14 @@
 # This file is a part of FileStreamBot
 
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from telethon.types.buttons import Callback
 from WebStreamer.vars import Var
 
 class Language:
-    def __new__(self, message: Message):
-        if getattr(message.from_user, 'language_code', 'Unknown') in self.available:
-            return getattr(self, getattr(message.from_user, 'language_code', "en"), self.en)
-        else:
-            return self.en
+    def __new__(self):
+        # if getattr(message.from_user, 'language_code', 'Unknown') in self.available:
+        #     return getattr(self, getattr(message.from_user, 'language_code', "en"), self.en)
+        # else:
+        return self.en
 
     available=['en', 'language_code']
 
@@ -43,8 +43,6 @@ class Language:
 <b>Link Generated Using<b> <a href='https://t.me/{}'>{}</a>"""
 
         BAN_TEXT: str = "__Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ.__\n\n**[Cᴏɴᴛᴀᴄᴛ Dᴇᴠᴇʟᴏᴘᴇʀ](tg://user?id={}) Tʜᴇʏ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ**"
-
-        LINK_LIMIT_EXCEEDED: str = "You Have Exceeded the Number of links you can generate"
         
         INFO_TEXT="""User ID: <code>{}</code>
 Plan: <code>{}</code>
@@ -92,30 +90,24 @@ Links Left: <code>{}<code>"""
 # ------------------------------------------------------------------------------
 
 class BUTTON(object):
-    START_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')
+    START_BUTTONS = [[
+        Callback('Hᴇʟᴘ', b'help'),
+        Callback('Aʙᴏᴜᴛ', b'about'),
+        Callback('Cʟᴏsᴇ', b'close')
         ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
-    )
-    HELP_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
+    HELP_BUTTONS = [[
+        Callback('Hᴏᴍᴇ', b'home'),
+        Callback('Aʙᴏᴜᴛ', b'about'),
+        Callback('Cʟᴏsᴇ', b'close'),
         ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
-    )
-    ABOUT_BUTTONS = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
+    ABOUT_BUTTONS = [[
+        Callback('Hᴏᴍᴇ', b'home'),
+        Callback('Hᴇʟᴘ', b'help'),
+        Callback('Cʟᴏsᴇ', b'close'),
         ],
-        [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
-    )
