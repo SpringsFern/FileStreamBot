@@ -3,8 +3,9 @@
 import asyncio
 import logging
 # import heapq
+import math
 from typing import Dict, Union
-from WebStreamer.bot import work_loads
+from WebStreamer.bot import StreamBot, work_loads
 from pyrogram import Client, utils, raw
 from .file_properties import get_file_ids
 from pyrogram.session import Session, Auth
@@ -164,10 +165,7 @@ class ByteStreamer:
         self,
         file_id: FileId,
         offset: int,
-        first_part_cut: int,
-        last_part_cut: int,
-        part_count: int,
-        chunk_size: int,
+        limit: int,
         multi_clients
     ) -> Union[str, None]:
         """
@@ -178,47 +176,20 @@ class ByteStreamer:
         client = multi_clients[file_id.index]
         work_loads[file_id.index] += 1
         logging.debug(f"Starting to yielding file with client {file_id.index}.")
-        media_session = await self.generate_media_session(client, file_id)
-
-        current_part = 1
-
-        location = await self.get_location(file_id)
-
         try:
-            r = await media_session.invoke(
-                raw.functions.upload.GetFile(
-                    location=location, offset=offset, limit=chunk_size
-                ),
-            )
-            if isinstance(r, raw.types.upload.File):
-                while True:
-                    chunk = r.bytes
-                    if not chunk:
-                        break
-                    elif part_count == 1:
-                        yield chunk[first_part_cut:last_part_cut]
-                    elif current_part == 1:
-                        yield chunk[first_part_cut:]
-                    elif current_part == part_count:
-                        yield chunk[:last_part_cut]
-                    else:
-                        yield chunk
+            if offset < 0:
+                if file_id.file_size == 0:
+                    raise ValueError("Negative offsets are not supported for file ids, pass a Message object instead")
 
-                    current_part += 1
-                    offset += chunk_size
+                chunks = math.ceil(file_id.file_size / 1024 / 1024)
+                offset += chunks
 
-                    if current_part > part_count:
-                        break
+            async for chunk in client.get_file(file_id, file_id.file_size, limit, offset):
+                yield chunk
 
-                    r = await media_session.invoke(
-                        raw.functions.upload.GetFile(
-                            location=location, offset=offset, limit=chunk_size
-                        ),
-                    )
         except (TimeoutError, AttributeError):
             pass
         finally:
-            logging.debug(f"Finished yielding file with {current_part} parts.")
             work_loads[file_id.index] -= 1
 
     
