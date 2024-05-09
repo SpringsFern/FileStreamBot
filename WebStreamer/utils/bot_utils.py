@@ -3,8 +3,12 @@
 from __future__ import annotations
 from pyrogram.errors import UserNotParticipant
 from pyrogram.enums.parse_mode import ParseMode
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.file_id import FileId, FileType, PHOTO_TYPES
+
+from telethon.events import NewMessage
+
+from WebStreamer.bot import StreamBot
 from WebStreamer.utils.Translation import Language
 from WebStreamer.utils.database import Database
 from WebStreamer.utils.file_properties import get_media_file_size, get_name
@@ -12,12 +16,17 @@ from WebStreamer.utils.human_readable import humanbytes
 from WebStreamer.vars import Var
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
+CHANNEL_PEER=None
 
-async def is_user_joined(message:Message,lang) -> bool:
+
+async def is_user_joined(event:NewMessage,lang) -> bool:
     try:
-        user = await message._client.get_chat_member(Var.UPDATES_CHANNEL, message.chat.id)
+        if not CHANNEL_PEER:
+            CHANNEL_PEER=await StreamBot.resolve_username(Var.UPDATES_CHANNEL)
+        users = event.client.get_participants(CHANNEL_PEER)
+
         if user.status == "BANNED":
-            await message.reply_text(
+            await event.reply_text(
                 text=lang.BAN_TEXT.format(Var.OWNER_ID),
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=True
@@ -43,7 +52,7 @@ async def is_user_joined(message:Message,lang) -> bool:
     return True
 
 # Generate Text, Stream Link, reply_markup
-async def gen_link(m: Message, _id, name: list) -> tuple[InlineKeyboardMarkup, str]:
+async def gen_link(event: NewMessage, _id, name: list) -> tuple[InlineKeyboardMarkup, str]:
     """Generate Text for Stream Link, Reply Text and reply_markup"""
     lang = Language(m)
     file_name = get_name(m)
@@ -60,7 +69,7 @@ async def gen_link(m: Message, _id, name: list) -> tuple[InlineKeyboardMarkup, s
 
     return reply_markup, Stream_Text
 
-async def is_user_banned(message, lang) -> bool:
+async def is_user_banned(event: NewMessage, lang) -> bool:
     if await db.is_user_banned(message.from_user.id):
         await message.reply_text(
             text=lang.BAN_TEXT.format(Var.OWNER_ID),
@@ -70,7 +79,7 @@ async def is_user_banned(message, lang) -> bool:
         return True
     return False
 
-async def is_user_exist(message: Message):
+async def is_user_exist(event: NewMessage):
     if not bool(await db.get_user(message.from_user.id)):
         await db.add_user(message.from_user.id)
         await message._client.send_message(
@@ -78,7 +87,7 @@ async def is_user_exist(message: Message):
             f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{message.from_user.first_name}](tg://user?id={message.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
         )
 
-async def is_user_accepted_tos(message: Message) -> bool:
+async def is_user_accepted_tos(event: NewMessage) -> bool:
     user=await db.get_user(message.from_user.id)
     if not ("agreed_to_tos" in user) or not (user["agreed_to_tos"]):
         await message.reply(f"Hi {message.from_user.mention},\nplease read and accept the Terms of Service to continue using the bot")
@@ -89,26 +98,26 @@ async def is_user_accepted_tos(message: Message) -> bool:
         return False
     return True
 
-async def is_allowed(message: Message):
+async def is_allowed(event: NewMessage):
     if Var.ALLOWED_USERS and not ((str(message.from_user.id) in Var.ALLOWED_USERS) or (message.from_user.username in Var.ALLOWED_USERS)):
         await message.reply("You are not in the allowed list of users who can use me.", quote=True)
         return False
     return True
 
-async def validate_user(message: Message, lang=None) -> bool:
-    if not await is_allowed(message):
+async def validate_user(event: NewMessage, lang=None) -> bool:
+    if not await is_allowed(event):
         return False
-    await is_user_exist(message)
+    await is_user_exist(event)
     if Var.TOS:
-        if not await is_user_accepted_tos(message):
+        if not await is_user_accepted_tos(event):
             return False
 
     if not lang:
-        lang = Language(message)
-    if await is_user_banned(message, lang):
+        lang = Language(event)
+    if await is_user_banned(event, lang):
         return False
     if Var.FORCE_UPDATES_CHANNEL:
-        if not await is_user_joined(message,lang):
+        if not await is_user_joined(event,lang):
             return False
     return True
 

@@ -14,7 +14,7 @@ from telethon.types.buttons import Callback
 
 db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
-@StreamBot.on(NewMessage, filters.Command('/start') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/start') & filters.ChatType(User))
 async def start(event: NewMessage):
     # event.
     lang = Language()
@@ -30,7 +30,7 @@ async def start(event: NewMessage):
         buttons=BUTTON.START_BUTTONS
         )
 
-@StreamBot.on(NewMessage, filters.Command('/about') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/about') & filters.ChatType(User))
 async def about(event: NewMessage):
     lang = Language()
     if not await validate_user(event, lang):
@@ -42,7 +42,7 @@ async def about(event: NewMessage):
     )
 
 
-@StreamBot.on(NewMessage, filters.Command('/help') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/help') & filters.ChatType(User))
 async def help_handler(event: NewMessage):
     lang = Language()
     if not await validate_user(event, lang):
@@ -56,7 +56,7 @@ async def help_handler(event: NewMessage):
 
 # ---------------------------------------------------------------------------------------------------
 
-@StreamBot.on(NewMessage, filters.Command('/myfiles') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/myfiles') & filters.ChatType(User))
 async def my_files(event: NewMessage):
     if not await validate_user(event):
         return
@@ -80,7 +80,7 @@ async def my_files(event: NewMessage):
         caption="Total files: {}".format(total_files),
         buttons=file_list)
 
-@StreamBot.on(NewMessage, filters.Command('/tos') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/tos') & filters.ChatType(User))
 async def tos_handler(event: NewMessage):
     if not Var.TOS:
         await event.reply("This bot does not have any terms of service.")
@@ -91,7 +91,7 @@ async def tos_handler(event: NewMessage):
             buttons=[[Callback("✅ I accepted the TOS", b"N/A")]]
         )
 
-@StreamBot.on(NewMessage, filters.Command('/getfile') | filters.ChatType(User))
+@StreamBot.on(NewMessage, filters.Command('/getfile') & filters.ChatType(User))
 async def getfile(event: NewMessage):
     if not await validate_user(event):
         return

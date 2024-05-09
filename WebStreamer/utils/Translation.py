@@ -1,6 +1,6 @@
 # This file is a part of FileStreamBot
 
-from telethon.types.buttons import Callback
+from telethon.types.buttons import Callback, Url
 from WebStreamer.vars import Var
 
 class Language:
@@ -95,19 +95,19 @@ class BUTTON(object):
         Callback('Aʙᴏᴜᴛ', b'about'),
         Callback('Cʟᴏsᴇ', b'close')
         ],
-        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Url("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     HELP_BUTTONS = [[
         Callback('Hᴏᴍᴇ', b'home'),
         Callback('Aʙᴏᴜᴛ', b'about'),
         Callback('Cʟᴏsᴇ', b'close'),
         ],
-        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Url("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     ABOUT_BUTTONS = [[
         Callback('Hᴏᴍᴇ', b'home'),
         Callback('Hᴇʟᴘ', b'help'),
         Callback('Cʟᴏsᴇ', b'close'),
         ],
-        [Callback("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
+        [Url("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]

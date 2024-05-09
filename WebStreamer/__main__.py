@@ -5,6 +5,8 @@ import asyncio
 import logging
 import traceback
 import logging.handlers as handlers
+
+
 from .vars import Var
 from aiohttp import web
 from WebStreamer.bot import StreamBot
@@ -52,7 +54,7 @@ async def start_services():
     print("---------------------- Initializing Clients ----------------------")
     await initialize_clients()
     print('--------------------------- Importing ---------------------------')
-    # utils.load_plugins("WebStreamer/bot/plugins")
+    load_plugins("WebStreamer/bot/plugins")
     print()
     print("------------------------------ DONE ------------------------------")
     if Var.KEEP_ALIVE:
