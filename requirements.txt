@@ -1,5 +1,5 @@
 aiohttp
-pyrogram
+https://github.com/KurimuzonAkuma/pyrogram/archive/refs/tags/v2.1.17.zip
 python-dotenv
 tgcrypto
 motor
