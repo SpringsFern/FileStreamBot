@@ -16,7 +16,7 @@ from WebStreamer.utils.bot_utils import db
 routes = web.RouteTableDef()
 
 @routes.get("/status", allow_head=True)
-async def root_route_handler(_):
+async def root_route_handler(request):
     return web.json_response(
         {
             "server_status": "running",
@@ -24,8 +24,8 @@ async def root_route_handler(_):
             "telegram_bot": "@" + StreamBot.username,
             "connected_bots": len(multi_clients),
             "loads": dict(
-                ("bot" + str(c), l)
-                for c,  l in sorted(work_loads.items())
+                (multi_clients[c].username if request.rel_url.query.get("id") else "bot" +str(c), l)
+                for c,  l in work_loads.items()
                 # for c, (_, l) in enumerate(
             #         sorted(work_loads.items(), key=lambda x: x[1], reverse=True)
             #     )
