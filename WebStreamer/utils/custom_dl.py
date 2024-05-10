@@ -7,6 +7,7 @@ import math
 from typing import Dict, Union
 from WebStreamer.bot import StreamBot, work_loads
 from pyrogram import Client, utils, raw
+from pyrogram.errors import FloodWait
 from .file_properties import get_file_ids
 from pyrogram.session import Session, Auth
 from pyrogram.errors import AuthBytesInvalid
@@ -189,6 +190,9 @@ class ByteStreamer:
 
         except (TimeoutError, AttributeError):
             pass
+        except FloodWait as e:
+            logging.error(f"{e} for client {client.username}")
+            raise e
         finally:
             work_loads[file_id.index] -= 1
 
