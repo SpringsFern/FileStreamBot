@@ -4,11 +4,17 @@ import asyncio
 import logging
 # import heapq
 from typing import Dict, Union
-from WebStreamer.bot import work_loads
+from WebStreamer.bot import work_loads, cdn_count
 from pyrogram import Client, utils, raw
 from .file_properties import get_file_ids
+from hashlib import sha256
+from pyrogram.crypto import aes
 from pyrogram.session import Session, Auth
 from pyrogram.errors import AuthBytesInvalid
+from pyrogram.errors import CDNFileHashMismatch
+from pyrogram.errors import (
+    VolumeLocNotFound, AuthBytesInvalid
+)
 from pyrogram.file_id import FileId, FileType, ThumbnailSource
 
 
@@ -140,8 +146,7 @@ class ByteStreamer:
 
             location = raw.types.InputPeerPhotoFileLocation(
                 peer=peer,
-                volume_id=file_id.volume_id,
-                local_id=file_id.local_id,
+                photo_id=file_id.media_id,
                 big=file_id.thumbnail_source == ThumbnailSource.CHAT_PHOTO_BIG,
             )
         elif file_type == FileType.PHOTO:
@@ -215,6 +220,85 @@ class ByteStreamer:
                             location=location, offset=offset, limit=chunk_size
                         ),
                     )
+            elif isinstance(r, raw.types.upload.FileCdnRedirect):
+                cdn_count[file_id.index] = cdn_count[file_id.index]+1 if file_id.index in cdn_count else 1
+                cdn_session = Session(
+                    client, r.dc_id, await Auth(client, r.dc_id, await client.storage.test_mode()).create(),
+                    await client.storage.test_mode(), is_media=True, is_cdn=True
+                )
+
+                try:
+                    await cdn_session.start()
+
+                    while True:
+                        r2 = await cdn_session.invoke(
+                            raw.functions.upload.GetCdnFile(
+                                file_token=r.file_token,
+                                offset=offset,
+                                limit=chunk_size
+                            )
+                        )
+
+                        if isinstance(r2, raw.types.upload.CdnFileReuploadNeeded):
+                            try:
+                                await media_session.invoke(
+                                    raw.functions.upload.ReuploadCdnFile(
+                                        file_token=r.file_token,
+                                        request_token=r2.request_token
+                                    )
+                                )
+                            except VolumeLocNotFound:
+                                break
+                            else:
+                                continue
+
+                        chunk = r2.bytes
+
+                        # https://core.telegram.org/cdn#decrypting-files
+                        decrypted_chunk = aes.ctr256_decrypt(
+                            chunk,
+                            r.encryption_key,
+                            bytearray(
+                                r.encryption_iv[:-4]
+                                + (offset // 16).to_bytes(4, "big")
+                            )
+                        )
+
+                        hashes = await media_session.invoke(
+                            raw.functions.upload.GetCdnFileHashes(
+                                file_token=r.file_token,
+                                offset=offset
+                            )
+                        )
+
+                        # https://core.telegram.org/cdn#verifying-files
+                        for i, h in enumerate(hashes):
+                            cdn_chunk = decrypted_chunk[h.limit * i: h.limit * (i + 1)]
+                            CDNFileHashMismatch.check(
+                                h.hash == sha256(cdn_chunk).digest(),
+                                "h.hash == sha256(cdn_chunk).digest()"
+                            )
+
+                        if not decrypted_chunk:
+                            break
+                        elif part_count == 1:
+                            yield decrypted_chunk[first_part_cut:last_part_cut]
+                        elif current_part == 1:
+                            yield decrypted_chunk[first_part_cut:]
+                        elif current_part == part_count:
+                            yield decrypted_chunk[:last_part_cut]
+                        else:
+                            yield decrypted_chunk
+
+                        current_part += 1
+                        offset += chunk_size
+
+                        if current_part > part_count:
+                            break
+                except Exception as e:
+                    raise e
+                finally:
+                    await cdn_session.stop()
         except (TimeoutError, AttributeError):
             pass
         finally:

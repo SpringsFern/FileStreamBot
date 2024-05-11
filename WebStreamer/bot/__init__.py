@@ -26,3 +26,4 @@ StreamBot = Client(
 multi_clients = {}
 work_loads = {}
 tg_connect = None
+cdn_count = {}
