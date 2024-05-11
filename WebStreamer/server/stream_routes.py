@@ -74,20 +74,36 @@ async def media_streamer(request: web.Request, db_id: str):
     
     file_size = file_id.file_size
 
-    try:
-        offset = request.http_range.start or 0
-        limit = request.http_range.stop or file_size
-        if (limit > file_size) or (offset < 0) or (limit < offset):
-            raise ValueError("range not in acceptable format")
-    except ValueError:
+    if range_header:
+        from_bytes, until_bytes = range_header.replace("bytes=", "").split("-")
+        from_bytes = int(from_bytes)
+        until_bytes = int(until_bytes) if until_bytes else file_size - 1
+    else:
+        from_bytes = request.http_range.start or 0
+        until_bytes = (request.http_range.stop or file_size) - 1
+    
+    logging.debug(f"from_bytes: {from_bytes} until_bytes: {until_bytes}")
+    if from_bytes <10 and until_bytes >200:
+        await db.increment_dl_count(file_id.org_id)
+
+    if (until_bytes > file_size) or (from_bytes < 0) or (until_bytes < from_bytes):
         return web.Response(
             status=416,
             body="416: Range not satisfiable",
             headers={"Content-Range": f"bytes */{file_size}"},
         )
 
+    chunk_size = 1024 * 1024
+    until_bytes = min(until_bytes, file_size - 1)
+
+    offset = from_bytes - (from_bytes % chunk_size)
+    first_part_cut = from_bytes - offset
+    last_part_cut = until_bytes % chunk_size + 1
+
+    req_length = until_bytes - from_bytes + 1
+    part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
     body = tg_connect.yield_file(
-        file_id, offset, limit, multi_clients
+        file_id, offset, first_part_cut, last_part_cut, part_count, chunk_size, multi_clients
     )
 
     mime_type = file_id.mime_type
@@ -105,8 +121,8 @@ async def media_streamer(request: web.Request, db_id: str):
         body=body,
         headers={
             "Content-Type": f"{mime_type}",
-            "Content-Range": f"bytes {offset}-{limit}/{file_size}",
-            "Content-Length": str(limit - offset),
+            "Content-Range": f"bytes {from_bytes}-{until_bytes}/{file_size}",
+            "Content-Length": str(req_length),
             "Content-Disposition": f'{disposition}; filename="{file_name}"',
             "Accept-Ranges": "bytes",
         },
