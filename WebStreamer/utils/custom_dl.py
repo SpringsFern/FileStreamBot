@@ -71,6 +71,11 @@ class ByteStreamer:
         """
 
         media_session = client.media_sessions.get(file_id.dc_id, None)
+        if media_session and not media_session.is_started.is_set():
+            logging.info("Removing Disconnected Media Session")
+            client.media_sessions.pop(file_id.dc_id, None)
+            await media_session.stop()
+            media_session=None
 
         if media_session is None:
             if file_id.dc_id != await client.storage.dc_id():
