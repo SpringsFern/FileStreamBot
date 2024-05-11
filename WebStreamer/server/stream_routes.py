@@ -34,6 +34,17 @@ async def root_route_handler(request):
         }
     )
 
+@routes.get("/session", allow_head=True)
+async def root_route_handler(request):
+    clint={}
+    for _, x in multi_clients.items():
+        conn={}
+        for dcid, session in x.media_sessions.items():                
+            if session:
+                conn[dcid]=session.is_started.is_set()
+        clint[x.username]=conn
+    return web.json_response(clint)
+
 @routes.get("/dl/{path}", allow_head=True)
 async def stream_handler(request: web.Request):
     try:
