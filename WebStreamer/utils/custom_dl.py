@@ -306,6 +306,12 @@ class ByteStreamer:
                     await cdn_session.stop()
         except (TimeoutError, AttributeError):
             pass
+        except OSError as e:
+            logging.info("Removing Media Session")
+            client.media_sessions.pop(file_id.dc_id, None)
+            await media_session.stop()
+            logging.error(e)
+            raise e
         finally:
             logging.debug(f"Finished yielding file with {current_part} parts.")
             work_loads[file_id.index] -= 1
