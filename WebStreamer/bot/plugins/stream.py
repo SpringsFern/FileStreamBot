@@ -41,10 +41,10 @@ async def private_receive_handler(bot: Client, message: Message):
         if not await is_user_joined(bot,message,lang):
             return
     try:
-        links=await db.link_available(message.from_user.id)
+        # links=await db.link_available(message.from_user.id)
         file_info=get_file_info(message)
-        if links > 10:
-            file_info["ads"]=True
+        # if links > 10:
+        file_info["ads"]=True
         inserted_id=await db.add_file(file_info)
         await get_file_ids(False, inserted_id, multi_clients)
         reply_markup, Stream_Text = await gen_link(m=message, _id=inserted_id, name=[StreamBot.username, StreamBot.fname])
