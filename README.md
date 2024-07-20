@@ -124,10 +124,6 @@ PORT=8080
 
 `BIN_CHANNEL` : Create a new channel (private/public), post something in your channel. Forward that post to [@missrose_bot](https://telegram.dog/MissRose_bot) and **reply** `/id`. Now copy paste the forwarded channel ID in this field. 
 
-`OWNER_ID` : Your Telegram User ID, Send `/id` to [@missrose_bot](https://telegram.dog/MissRose_bot) to get Your Telegram User ID
-
-`DATABASE_URL` : MongoDB URI for saving User IDs when they first Start the Bot. We will use that for Broadcasting to them. I will try to add more features related with Database. If you need help to get the URI you can ask in [Me Telegram](https://t.me/Avishkarpatil).
-
 ### For MultiClient
 
 `MULTI_TOKEN1`: Add your first bot token or session strings here.
@@ -159,24 +155,19 @@ you may also add as many as bots you want. (max limit is not tested yet)
 
 `UPDATES_CHANNEL` : Your Telegram Channel Username without @
 
-`FORCE_UPDATES_CHANNEL` : Set to True, if you want every user Join update channel to use the bot.
-
-`SESSION_NAME` : Name for the Database created on your MongoDB. Defaults to `F2LxBot`
-
 `ALLOWED_USERS`: The user Telegram IDs of users to which the bot only reply to.
+
 > **Note**
 > Leave this field empty and anyone will be able to use your bot instance.
 > You may also add multiple users by adding the IDs separated by comma (,)
 
 `KEEP_ALIVE` : If you want to make the server ping itself every
 
-`IMAGE_FILEID` : Photo to send with /myfiles command. Put file_id to send a photo that exists on the Telegram servers or Put an HTTP URL to get a photo from the Internet
-
-`TOS` : URL to your Terms of Service Text
-
-`MODE` should be set to secondary if you only want to use the server for serving files
+`NO_UPDATE` if set to `true` bot won't respond to any messages
 
 `LINK_LIMIT`: Limit Number of Links a User Can Generate. Value should be a Number
+
+`TRUST_FORWARD_HEADERS`: (defaults to true) - Whether or not to trust X-Forwarded-For headers when logging requests.
 
 ## How to use the bot
 
@@ -207,8 +198,8 @@ You can contact either via my [Telegram Group](https://xn--r1a.click/AWeirdStrin
 
 - [Me](https://xn--r1a.click/DeekshithSH)
 - [EverythingSuckz](https://github.com/EverythingSuckz) for his [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot)
-- [Avishkar Patil](https://github.com/avipatilpro) for his [FileStreamBot](https://github.com/avipatilpro/FileStreamBot)
+- [Tulir Asokan](https://github.com/tulir) for his [tgfilestream](https://github.com/tulir/tgfilestream)
 - [eyaadh](https://github.com/eyaadh) for his awesome [Megatron Bot](https://github.com/eyaadh/megadlbot_oss).
 - [BlackStone](https://github.com/eyMarv) for adding multi-client support.
-- [Dan Tès](https://telegram.dog/haskell) for his [Pyrogram Library](https://github.com/pyrogram/pyrogram)
+- [Lonami](https://github.com/Lonami) for his [Telethon Library](https://github.com/LonamiWebs/Telethon)
 - [TheHamkerCat](https://github.com/TheHamkerCat) for helping me with my common doubts.

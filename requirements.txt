@@ -1,7 +1,4 @@
+telethon
+cryptg 
 aiohttp
-https://github.com/KurimuzonAkuma/pyrogram/archive/refs/tags/v2.1.17.zip
 python-dotenv
-tgcrypto
-motor
-aiofiles
-dnspython

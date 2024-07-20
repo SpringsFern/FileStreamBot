@@ -2,27 +2,28 @@
 # Thanks to Eyaadh <https://github.com/eyaadh>
 
 import time
-import math
 import logging
 import mimetypes
 import traceback
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from WebStreamer.bot import multi_clients, work_loads, StreamBot
+from WebStreamer.utils.utils import allow_request, get_requester_ip, get_readable_time, ongoing_requests
 from WebStreamer.vars import Var
-from WebStreamer.server.exceptions import FIleNotFound, InvalidHash
-from WebStreamer import utils, StartTime, __version__
-from WebStreamer.utils.render_template import render_page
+from WebStreamer.server.exceptions import FIleNotFound
+from WebStreamer import StartTime, __version__
+from WebStreamer.utils.paralleltransfer import ParallelTransferrer
 
 
 routes = web.RouteTableDef()
+class_cache = {}
 
 @routes.get("/status", allow_head=True)
-async def root_route_handler(_):
+async def root_route_handler(request: web.Request):
     return web.json_response(
         {
             "server_status": "running",
-            "uptime": utils.get_readable_time(time.time() - StartTime),
+            "uptime": get_readable_time(time.time() - StartTime),
             "telegram_bot": "@" + StreamBot.username,
             "connected_bots": len(multi_clients),
             "loads": dict(
@@ -31,63 +32,52 @@ async def root_route_handler(_):
                     sorted(work_loads.items(), key=lambda x: x[1], reverse=True)
                 )
             ),
+            "ongoing_requests": ongoing_requests if request.query.get("id") == Var.API_HASH else  None ,
             "version": __version__,
         }
     )
 
-@routes.get("/watch/{path}", allow_head=True)
+@routes.head("/dl/{path}")
+@routes.head("/dl/{path}/{name}")
+async def stream_handler(request: web.Request):
+    return await media_streamer(request, True)
+
+@routes.get("/dl/{path}", allow_head=False)
+@routes.get("/dl/{path}/{name}", allow_head=False)
 async def stream_handler(request: web.Request):
     try:
-        path = request.match_info["path"]
-        return web.Response(text=await render_page(path), content_type='text/html')
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
-    except FIleNotFound as e:
-        raise web.HTTPNotFound(text=e.message)
+        return await media_streamer(request, False)
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
     except Exception as e:
-        logging.critical(e.with_traceback(None))
-        logging.debug(traceback.format_exc())
+        logging.error(traceback.format_exc())
         raise web.HTTPInternalServerError(text=str(e))
 
-@routes.get("/dl/{path}", allow_head=True)
-async def stream_handler(request: web.Request):
-    try:
-        path = request.match_info["path"]
-        return await media_streamer(request, path)
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
-    except FIleNotFound as e:
-        raise web.HTTPNotFound(text=e.message)
-    except (AttributeError, BadStatusLine, ConnectionResetError):
-        pass
-    except Exception as e:
-        logging.critical(e.with_traceback(None))
-        logging.debug(traceback.format_exc())
-        raise web.HTTPInternalServerError(text=str(e))
-
-class_cache = {}
-
-async def media_streamer(request: web.Request, db_id: str):
+async def media_streamer(request: web.Request, head: bool=False):
+    msg_id = int(request.match_info["path"])
+    ip = get_requester_ip(request)
     range_header = request.headers.get("Range", 0)
     
     index = min(work_loads, key=work_loads.get)
     faster_client = multi_clients[index]
     
     if Var.MULTI_CLIENT:
-        logging.info(f"Client {index} is now serving {request.headers.get('X-FORWARDED-FOR',request.remote)}")
+        logging.debug(f"Client {index} is now serving {ip}")
 
     if faster_client in class_cache:
-        tg_connect = class_cache[faster_client]
+        transfer = class_cache[faster_client]
         logging.debug(f"Using cached ByteStreamer object for client {index}")
     else:
         logging.debug(f"Creating new ByteStreamer object for client {index}")
-        tg_connect = utils.ByteStreamer(faster_client)
-        class_cache[faster_client] = tg_connect
+        transfer = ParallelTransferrer(faster_client)
+        transfer.post_init()
+        class_cache[faster_client] = transfer
+        logging.debug(f"Created new ByteStreamer object for client {index}")
     logging.debug("before calling get_file_properties")
-    file_id = await tg_connect.get_file_properties(db_id, multi_clients)
-    logging.debug("after calling get_file_properties")
+    try:
+        file_id = await transfer.get_file_properties(msg_id)
+    except FIleNotFound as e:
+        return web.Response(status=404, text="File not found")
     
     file_size = file_id.file_size
 
@@ -105,22 +95,19 @@ async def media_streamer(request: web.Request, db_id: str):
             body="416: Range not satisfiable",
             headers={"Content-Range": f"bytes */{file_size}"},
         )
-
-    chunk_size = 1024 * 1024
     until_bytes = min(until_bytes, file_size - 1)
-
-    offset = from_bytes - (from_bytes % chunk_size)
-    first_part_cut = from_bytes - offset
-    last_part_cut = until_bytes % chunk_size + 1
-
     req_length = until_bytes - from_bytes + 1
-    part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
-    body = tg_connect.yield_file(
-        file_id, index, offset, first_part_cut, last_part_cut, part_count, chunk_size
-    )
+    if not head:
+        if not allow_request(ip):
+            return web.Response(status=429)
+        body = transfer.download(
+            file_id, file_size, from_bytes, until_bytes, index, ip
+        )
+    else:
+        body = None
 
     mime_type = file_id.mime_type
-    file_name = utils.get_name(file_id)
+    file_name = file_id.file_name
     disposition = "attachment"
 
     if not mime_type:

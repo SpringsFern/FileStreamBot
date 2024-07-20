@@ -1,4 +1,5 @@
-# tgfilestream - A Telegram bot that can stream Telegram files to users over HTTP.
+# This file is a part of FileStreamBot
+#
 # Copyright (C) 2019 Tulir Asokan
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,18 +21,25 @@ import logging
 import asyncio
 import math
 
-from WebStreamer.vars import Var
-from telethon import TelegramClient, utils
+from telethon import TelegramClient
 from telethon.crypto import AuthKey
 from telethon.network import MTProtoSender
 from telethon.tl.functions.auth import ExportAuthorizationRequest, ImportAuthorizationRequest
 from telethon.tl.functions.upload import GetFileRequest
 from telethon.tl.types import (Document, InputFileLocation, InputDocumentFileLocation,
-                               InputPhotoFileLocation, InputPeerPhotoFileLocation, DcOption)
+                               InputPhotoFileLocation, InputPeerPhotoFileLocation, DcOption,
+                               InputPeerChat, InputPeerUser, InputPeerChannel)
 from telethon.errors import DcIdInvalidError
+
+from WebStreamer.utils.utils import decrement_counter, increment_counter
 
 TypeLocation = Union[Document, InputDocumentFileLocation, InputPeerPhotoFileLocation,
                      InputFileLocation, InputPhotoFileLocation]
+
+from WebStreamer.utils.file_id import FileId, FileType, ThumbnailSource
+from WebStreamer.utils.file_properties import get_file_ids
+from WebStreamer.vars import Var
+from WebStreamer.bot import work_loads
 
 root_log = logging.getLogger(__name__)
 
@@ -73,14 +81,14 @@ class DCConnectionManager:
     async def _new_connection(self) -> Connection:
         if not self.dc:
             self.dc = await self.client._get_dc(self.dc_id)
-        sender = MTProtoSender(self.auth_key, self.loop, loggers=self.client._log)
+        sender = MTProtoSender(self.auth_key, loggers=self.client._log)
         index = len(self.connections) + 1
         conn = Connection(sender=sender, log=self.log.getChild(f"conn{index}"), lock=asyncio.Lock())
         self.connections.append(conn)
         async with conn.lock:
             conn.log.info("Connecting...")
             connection_info = self.client._connection(self.dc.ip_address, self.dc.port, self.dc.id,
-                                                      loop=self.loop, loggers=self.client._log,
+                                                      loggers=self.client._log,
                                                       proxy=self.client._proxy)
             await sender.connect(connection_info)
             if not self.auth_key:
@@ -145,6 +153,73 @@ class ParallelTransferrer:
             4: DCConnectionManager(client, 4),
             5: DCConnectionManager(client, 5),
         }
+        self.clean_timer = 30 * 60
+        self.cached_file_ids: Dict[int, FileId] = {}
+        asyncio.create_task(self.clean_cache())
+
+    async def get_file_properties(self, message_id: int) -> FileId:
+        """
+        Returns the properties of a media of a specific message in a FIleId class.
+        if the properties are cached, then it'll return the cached results.
+        or it'll generate the properties from the Message ID and cache them.
+        """
+        if message_id not in self.cached_file_ids:
+            await self.generate_file_properties(message_id)
+            logging.debug(f"Cached file properties for message with ID {message_id}")
+        return self.cached_file_ids[message_id]
+    
+    async def generate_file_properties(self, message_id: int) -> FileId:
+        """
+        Generates the properties of a media file on a specific message.
+        returns ths properties in a FIleId class.
+        """
+        file_id = await get_file_ids(self.client, Var.BIN_CHANNEL, message_id)
+        logging.debug(f"Generated file ID and Unique ID for message with ID {message_id}")
+        self.cached_file_ids[message_id] = file_id
+        logging.debug(f"Cached media message with ID {message_id}")
+    
+    @staticmethod
+    def get_location(file_id: FileId) -> TypeLocation:
+        """
+        Returns the file location for the media file.
+        """
+        file_type = file_id.file_type
+
+        if file_type == FileType.CHAT_PHOTO:
+            if file_id.chat_id > 0:
+                peer = InputPeerUser(
+                    user_id=file_id.chat_id, access_hash=file_id.chat_access_hash
+                )
+            else:
+                if file_id.chat_access_hash == 0:
+                    peer = InputPeerChat(chat_id=-file_id.chat_id)
+                else:
+                    peer = InputPeerChannel(
+                        channel_id=-1000000000000 - file_id.chat_id,
+                        access_hash=file_id.chat_access_hash,
+                    )
+
+            location = InputPeerPhotoFileLocation(
+                peer=peer,
+                volume_id=file_id.volume_id,
+                local_id=file_id.local_id,
+                big=file_id.thumbnail_source == ThumbnailSource.CHAT_PHOTO_BIG,
+            )
+        elif file_type == FileType.PHOTO:
+            location = InputPhotoFileLocation(
+                id=file_id.media_id,
+                access_hash=file_id.access_hash,
+                file_reference=file_id.file_reference,
+                thumb_size=file_id.thumbnail_size,
+            )
+        else:
+            location = InputDocumentFileLocation(
+                id=file_id.media_id,
+                access_hash=file_id.access_hash,
+                file_reference=file_id.file_reference,
+                thumb_size=file_id.thumbnail_size,
+            )
+        return location
 
     def post_init(self) -> None:
         self.dc_managers[self.client.session.dc_id].auth_key = self.client.session.auth_key
@@ -154,45 +229,69 @@ class ParallelTransferrer:
         self._counter += 1
         return self._counter
 
-    async def _int_download(self, request: GetFileRequest, first_part: int, last_part: int,
-                            part_count: int, part_size: int, dc_id: int, first_part_cut: int,
-                            last_part_cut: int) -> AsyncGenerator[bytes, None]:
+    async def _int_download(self, request: GetFileRequest, dc_id: int,first_part_cut: int,
+        last_part_cut: int, part_count: int, chunk_size: int,
+        last_part: int, total_parts: int, index: int, ip: str) -> AsyncGenerator[bytes, None]:
         log = self.log
         try:
-            part = first_part
+            increment_counter(ip)
+            work_loads[index] += 1
+            current_part = 1
             dcm = self.dc_managers[dc_id]
             async with dcm.get_connection() as conn:
                 log = conn.log
-                while part <= last_part:
+                while current_part <= part_count:
                     result = await conn.sender.send(request)
-                    request.offset += part_size
-                    if part == first_part:
+                    request.offset += chunk_size
+                    if not result.bytes:
+                        break
+                    elif part_count == 1:
+                        yield result.bytes[first_part_cut:last_part_cut]
+                    elif current_part == 1:
                         yield result.bytes[first_part_cut:]
-                    elif part == last_part:
+                    elif current_part == part_count:
                         yield result.bytes[:last_part_cut]
                     else:
                         yield result.bytes
-                    log.debug(f"Part {part}/{last_part} (total {part_count}) downloaded")
-                    part += 1
+                    log.debug(f"Part {current_part}/{last_part} (total {total_parts}) downloaded")
+                    current_part += 1
                 log.debug("Parallel download finished")
         except (GeneratorExit, StopAsyncIteration, asyncio.CancelledError):
             log.debug("Parallel download interrupted")
             raise
         except Exception:
             log.debug("Parallel download errored", exc_info=True)
+        finally:
+            logging.debug(f"Finished yielding file with {current_part} parts.")
+            work_loads[index] -= 1
+            decrement_counter(ip)
 
-    def download(self, file: TypeLocation, file_size: int, offset: int, limit: int
-                 ) -> AsyncGenerator[bytes, None]:
-        dc_id, location = utils.get_input_location(file)
-        part_size = 512 * 1024
-        first_part_cut = offset % part_size
-        first_part = math.floor(offset / part_size)
-        last_part_cut = part_size - (limit % part_size)
-        last_part = math.ceil(limit / part_size)
-        part_count = math.ceil(file_size / part_size)
+    def download(self, file_id: FileId, file_size: int, from_bytes: int, until_bytes: int, index: int, ip: str
+        ) -> AsyncGenerator[bytes, None]:
+        dc_id = file_id.dc_id
+        location=self.get_location(file_id)
+
+        chunk_size = Var.CHUNK_SIZE
+        offset = from_bytes - (from_bytes % chunk_size)
+        first_part_cut = from_bytes - offset
+        first_part = math.floor(offset / chunk_size)
+        last_part_cut = until_bytes % chunk_size + 1
+        last_part = math.ceil(until_bytes / chunk_size)
+        part_count = last_part - first_part
+        total_parts = math.ceil(file_size / chunk_size)
+
         self.log.debug(f"Starting parallel download: chunks {first_part}-{last_part}"
                        f" of {part_count} {location!s}")
-        request = GetFileRequest(location, offset=first_part * part_size, limit=part_size)
+        request = GetFileRequest(location, offset=offset, limit=chunk_size)
 
-        return self._int_download(request, first_part, last_part, part_count, part_size, dc_id,
-                                  first_part_cut, last_part_cut)
+        return self._int_download(request, dc_id, first_part_cut, last_part_cut,
+            part_count, chunk_size, last_part, total_parts, index, ip)
+
+    async def clean_cache(self) -> None:
+        """
+        function to clean the cache to reduce memory usage
+        """
+        while True:
+            await asyncio.sleep(self.clean_timer)
+            self.cached_file_ids.clear()
+            logging.debug("Cleaned the cache")

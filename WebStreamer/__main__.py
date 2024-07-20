@@ -5,25 +5,27 @@ import asyncio
 import logging
 import traceback
 import logging.handlers as handlers
+
+
 from .vars import Var
 from aiohttp import web
-from pyrogram import idle
 from WebStreamer.bot import StreamBot
 from WebStreamer.server import web_server
-from WebStreamer.utils import ping_server
+from WebStreamer.utils.keepalive import ping_server
+from WebStreamer.utils.utils import load_plugins
 from WebStreamer.bot.clients import initialize_clients
 
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG if Var.DEBUG else logging.INFO,
     datefmt="%d/%m/%Y %H:%M:%S",
     format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(stream=sys.stdout),
               handlers.RotatingFileHandler("streambot.log", mode="a", maxBytes=104857600, backupCount=2, encoding="utf-8")],)
 
 logging.getLogger("aiohttp").setLevel(logging.ERROR)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
+logging.getLogger("telethon").setLevel(logging.ERROR)
 
 server = web.AppRunner(web_server())
 
@@ -35,13 +37,15 @@ loop = asyncio.get_event_loop()
 
 async def start_services():
     print()
-    if Var.SECONDARY:
+    if Var.NO_UPDATE:
         print("------------------ Starting as Secondary Server ------------------")
     else:
         print("------------------- Starting as Primary Server -------------------")
     print()
     print("-------------------- Initializing Telegram Bot --------------------")
-    await StreamBot.start()
+    # await StreamBot.connect()
+    await StreamBot.start(bot_token=Var.BOT_TOKEN)
+    await StreamBot.startup()
     bot_info = await StreamBot.get_me()
     StreamBot.id = bot_info.id
     StreamBot.username = bot_info.username
@@ -50,7 +54,11 @@ async def start_services():
     print()
     print("---------------------- Initializing Clients ----------------------")
     await initialize_clients()
-    print("------------------------------ DONE ------------------------------")
+    if not Var.NO_UPDATE:
+        print('--------------------------- Importing ---------------------------')
+        load_plugins("WebStreamer/bot/plugins")
+        print()
+        print("------------------------------ DONE ------------------------------")
     if Var.KEEP_ALIVE:
         print("------------------ Starting Keep Alive Service ------------------")
         print()
@@ -63,15 +71,14 @@ async def start_services():
     print()
     print("------------------------- Service Started -------------------------")
     print("                        bot =>> {}".format(bot_info.first_name))
-    if bot_info.dc_id:
-        print("                        DC ID =>> {}".format(str(bot_info.dc_id)))
+    print("                        DC ID =>> {}".format(str(StreamBot.session.dc_id)))
     print(" URL =>> {}".format(Var.URL))
     print("------------------------------------------------------------------")
-    await idle()
+    await StreamBot.run_until_disconnected()
 
 async def cleanup():
     await server.cleanup()
-    await StreamBot.stop()
+    await StreamBot.disconnect()
 
 if __name__ == "__main__":
     try:

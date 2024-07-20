@@ -1,5 +1,4 @@
 # This file is a part of FileStreamBot
-from urllib import request
 from os import environ
 from dotenv import load_dotenv
 
@@ -26,22 +25,14 @@ class Var(object):
             "s" if HAS_SSL else "", FQDN, "" if NO_PORT else ":" + str(PORT)
         )
 
-    DATABASE_URL = str(environ.get('DATABASE_URL'))
     UPDATES_CHANNEL = str(environ.get('UPDATES_CHANNEL', "Telegram"))
-    OWNER_ID = int(environ.get('OWNER_ID', '777000'))
-    SESSION_NAME = str(environ.get('SESSION_NAME', 'F2LxBot'))
-    FORCE_UPDATES_CHANNEL = environ.get('FORCE_UPDATES_CHANNEL', False)
-    FORCE_UPDATES_CHANNEL = True if str(FORCE_UPDATES_CHANNEL).lower() == "true" else False
     ALLOWED_USERS = [x.strip("@ ") for x in str(environ.get("ALLOWED_USERS", "") or "").split(",") if x.strip("@ ")]
-
     KEEP_ALIVE = str(environ.get("KEEP_ALIVE", "0").lower()) in  ("1", "true", "t", "yes", "y")
-    IMAGE_FILEID = environ.get('IMAGE_FILEID', "https://deekshith.eu.org/static/MyFiles.png")
-    TOS = environ.get("TOS", None)
-    if TOS:
-        response = request.urlopen(TOS)
-        data = response.read().decode('utf-8')
-        TOS = data.strip()
-
-    MODE = environ.get("MODE", "primary")
-    SECONDARY = True if MODE.lower() == "secondary" else False
-    LINK_LIMIT = int(environ.get("LINK_LIMIT")) if "LINK_LIMIT" in environ else None
+    NO_UPDATE = True if environ.get("NO_UPDATE", "false") == "NO_UPDATE" else False
+    CONNECTION_LIMIT = int(environ.get("CONNECTION_LIMIT", 20))
+    REQUEST_LIMIT = int(environ.get("REQUEST_LIMIT", 5))
+    TRUST_HEADERS: bool = str(environ.get("TRUST_HEADERS", "1").lower()) in ("1", "true", "t", "yes", "y")
+    DEBUG: bool = str(environ.get("DEBUG", "0").lower()) in ("1", "true", "t", "yes", "y")
+    CUSTOM_URL:str = environ.get("CUSTOM_URL", None)
+    LINK_TEMPLATE:str = environ.get("LINK_TEMPLATE", "{url}/dl/{id}/{name}")
+    CHUNK_SIZE: int = int(environ.get("CHUNK_SIZE", 1024 * 1024)) #bytes

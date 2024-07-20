@@ -1,53 +1,54 @@
 # This file is a part of FileStreamBot
 
-
-import asyncio
+import logging
+import urllib.parse
+from WebStreamer.bot import StreamBot
+from telethon import Button, errors
+from telethon.events import NewMessage
+from telethon.extensions import html
 from WebStreamer.utils.Translation import Language
-from WebStreamer.bot import StreamBot, multi_clients
-from WebStreamer.utils.bot_utils import gen_link, validate_user
-from WebStreamer.utils.database import Database
-from WebStreamer.utils.file_properties import get_file_ids, get_file_info
+from WebStreamer.utils.utils import validate_user
+from WebStreamer.utils.file_properties import get_name, get_size
+from WebStreamer.utils.utils import humanbytes
 from WebStreamer.vars import Var
-from pyrogram import filters, Client
-from pyrogram.errors import FloodWait
-from pyrogram.types import Message
-from pyrogram.enums.parse_mode import ParseMode
-db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
-@StreamBot.on_message(
-    filters.private
-    & (
-        filters.document
-        | filters.video
-        | filters.audio
-        | filters.animation
-        | filters.voice
-        | filters.video_note
-        | filters.photo
-        | filters.sticker
-    ),
-    group=4,
-)
-async def private_receive_handler(bot: Client, message: Message):
-    lang = Language(message)
-    if not await validate_user(message, lang):
+@StreamBot.on(NewMessage(func=lambda e: True if e.message.file else False))
+async def private_receive_handler(event: NewMessage.Event):
+    if not await validate_user(event):
         return
     try:
-        ptype=await db.link_available(message.from_user.id)
-        if not (ptype):
-            return await message.reply_text(lang.LINK_LIMIT_EXCEEDED)
+        # if not event.message.file:
+        #     logging.info(f"MediaNotFound: {event.stringify()}")
+        #     return
+        log_msg=await event.message.forward_to(Var.BIN_CHANNEL)
+        lang = Language(event)
+        file_name = get_name(event.message.file)
+        file_size = humanbytes(get_size(event.message.media))
 
-        inserted_id=await db.add_file(get_file_info(message))
-        await get_file_ids(False, inserted_id, multi_clients)
-        reply_markup, Stream_Text = await gen_link(m=message, _id=inserted_id, name=[StreamBot.username, StreamBot.fname])
-        await message.reply_text(
-            text=Stream_Text,
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True,
-            reply_markup=reply_markup,
-            quote=True
+        if Var.CUSTOM_URL:
+            stream_link=Var.LINK_TEMPLATE.format_map({
+                "url": Var.CUSTOM_URL,
+                "name": urllib.parse.quote(file_name),
+                "size": file_size,
+                "id": log_msg.id,
+                "mime": urllib.parse.quote(log_msg.file.mime_type)
+            })
+        else:
+            stream_link = f"{Var.URL}dl/{log_msg.id}/{urllib.parse.quote(get_name(event.message.file))}"
+
+        await event.message.reply(
+            message=lang.STREAM_MSG_TEXT.format_map({
+                "name": file_name,
+                "size": file_size,
+                "link": stream_link,
+                "username": StreamBot.username,
+                "firstname": StreamBot.fname
+                }),
+            link_preview=False,
+            buttons=[
+            [Button.url("Dᴏᴡɴʟᴏᴀᴅ 📥", url=stream_link)]
+            ],
+            parse_mode=html
         )
-    except FloodWait as e:
-        print(f"Sleeping for {str(e.value)}s")
-        await asyncio.sleep(e.value)
-        await bot.send_message(chat_id=Var.BIN_CHANNEL, text=f"Gᴏᴛ FʟᴏᴏᴅWᴀɪᴛ ᴏғ {str(e.value)}s from [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n\n**𝚄𝚜𝚎𝚛 𝙸𝙳 :** `{str(message.from_user.id)}`", disable_web_page_preview=True, parse_mode=ParseMode.MARKDOWN)
+    except errors.FloodWaitError as e:
+        logging.error(e)
