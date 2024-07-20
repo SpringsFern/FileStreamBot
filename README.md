@@ -198,7 +198,7 @@ You can contact either via my [Telegram Group](https://xn--r1a.click/AWeirdStrin
 
 - [Me](https://xn--r1a.click/DeekshithSH)
 - [EverythingSuckz](https://github.com/EverythingSuckz) for his [TG-FileStreamBot](https://github.com/EverythingSuckz/TG-FileStreamBot)
-- [Tulir Asokan](https://github.com/tulir) for his [tgfilestream](https://github.com/tulir/tgfilestream)
+- [Tulir Asokan](https://github.com/tulir) for his [tg filestream](bit.ly/tg-stream)
 - [eyaadh](https://github.com/eyaadh) for his awesome [Megatron Bot](https://github.com/eyaadh/megadlbot_oss).
 - [BlackStone](https://github.com/eyMarv) for adding multi-client support.
 - [Lonami](https://github.com/Lonami) for his [Telethon Library](https://github.com/LonamiWebs/Telethon)
