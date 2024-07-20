@@ -29,7 +29,7 @@ async def private_receive_handler(event: NewMessage.Event):
             stream_link=Var.LINK_TEMPLATE.format_map({
                 "url": Var.CUSTOM_URL,
                 "name": urllib.parse.quote(file_name),
-                "size": file_size,
+                "size": get_size(event.message.media),
                 "id": log_msg.id,
                 "mime": urllib.parse.quote(log_msg.file.mime_type)
             })
