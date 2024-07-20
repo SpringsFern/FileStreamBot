@@ -90,3 +90,14 @@ class TLClient(TelegramClient):
                 proxy=None
             )
         )
+    
+    async def startup(self):
+        config = await self(functions.help.GetConfigRequest())
+        for option in config.dc_options:
+            if option.ip_address == self.session.server_address:
+                if self.session.dc_id != option.id:
+                    logging.warning(f"Fixed DC ID in session from {self.session.dc_id} to {option.id}")
+                self.session.set_dc(option.id, option.ip_address, option.port)
+                self.session.save()
+                break
+        # transfer.post_init()
