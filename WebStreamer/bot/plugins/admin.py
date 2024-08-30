@@ -141,7 +141,7 @@ async def broadcast_(c, m):
         )
     os.remove('broadcast.txt')
 
-@StreamBot.on_message(filters.command("who") & filters.private & filters.user(Var.OWNER_ID) & filters.reply)
+@StreamBot.on_message(filters.command("who") & filters.private  | filters.group & filters.user(Var.OWNER_ID) & filters.reply)
 async def sts(c: Client, m: Message):
     media=get_media_from_message(m.reply_to_message)
     if media:
