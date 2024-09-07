@@ -26,7 +26,7 @@ class Language:
 <i>- Download link with the fastest speed.</i>
 <u>🔸 WARNING 🚸</u>\n
 <b>🔞 Pornographic content leads to a permanent ban.</b>\n
-<i>Contact the developer or report bugs</i> <b>: <a href='https://t.me/ajmods_bot</a></b>"""
+<i>Contact the developer or report bugs</i> <b>: <a href='https://t.me/ajmods_bot'</a></b>"""
 
         ABOUT_TEXT: str = """
 <b>⚜ My Name: Direct Link Generator</b>\n
