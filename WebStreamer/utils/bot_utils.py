@@ -73,10 +73,10 @@ async def is_user_banned(message, lang) -> bool:
 async def is_user_exist(message: Message):
     if not bool(await db.get_user(message.from_user.id)):
         await db.add_user(message.from_user.id)
-        await message._client.send_message(
-            Var.BIN_CHANNEL,
-            f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{message.from_user.first_name}](tg://user?id={message.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
-        )
+        #await message._client.send_message(
+        #    Var.BIN_CHANNEL,
+        #    f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{message.from_user.first_name}](tg://user?id={message.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
+        #)
 
 async def is_user_accepted_tos(message: Message) -> bool:
     user=await db.get_user(message.from_user.id)
