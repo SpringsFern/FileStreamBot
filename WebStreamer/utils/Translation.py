@@ -1,16 +1,16 @@
-# This file is a part of FileStreamBot
-
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from WebStreamer.vars import Var
 
 class Language:
     def __new__(self, message: Message):
-        if getattr(message.from_user, 'language_code', 'Unknown') in self.available:
-            return getattr(self, getattr(message.from_user, 'language_code', "en"), self.en)
+        # Get user language code or default to 'en'
+        language_code = getattr(message.from_user, 'language_code', 'en')
+        if language_code in self.available:
+            return getattr(self, language_code, self.en)
         else:
             return self.en
 
-    available=['en', 'language_code']
+    available = ['en']  # Corrected available language codes list
 
     class en:
         START_TEXT: str = """
@@ -34,30 +34,23 @@ class Language:
 <b>🔹 Last Updated: [23 August 2024]</b>
 """
 
-        STREAM_MSG_TEXT: str ="""
+        STREAM_MSG_TEXT: str = """
 <i><u>Your Link is Generated!</u></i>\n
 <b>📂 File Name:</b> <b>{}</b>\n
 <b>📦 File Size:</b> {}\n
 <b>📥 Download:</b> <b>{}</b>\n
-<b>🖥  Watch:</b> <b>{}</b>\n
+<b>🖥 Watch:</b> <b>{}</b>\n
 <b>Link Generated Using</b> <a href='https://t.me/{}'>{}</a>"""
 
         BAN_TEXT: str = "__Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ.__\n\n**[Cᴏɴᴛᴀᴄᴛ Dᴇᴠᴇʟᴏᴘᴇʀ](tg://user?id={}) Tʜᴇʏ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ**"
 
         LINK_LIMIT_EXCEEDED: str = "You Have Exceeded the Number of links you can generate"
         
-        INFO_TEXT="""User ID: <code>{}</code>
+        INFO_TEXT = """User ID: <code>{}</code>
 Plan: <code>{}</code>
 Links Used: <code>{}</code>
-Links Left: <code>{}<code>"""
+Links Left: <code>{}</code>"""  # Fixed typo
 
-#----------------------#
-# Change the Text's below to add suport for your language
-
-# you can find the language_code for your language here
-# https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags
-# change language_code with your language code
-# eg:    class kn(object):
     class language_code:
         START_TEXT: str = """
 <i>👋 Hᴇʏ,</i>{}\n
@@ -80,7 +73,7 @@ Links Left: <code>{}<code>"""
 <b>🔹Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ : [ 18-Feb-22 ] 12:36 AM</b>
 """
 
-        STREAM_MSG_TEXT: str ="""
+        STREAM_MSG_TEXT: str = """
 <i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>\n
 <b>📂 Fɪʟᴇ ɴᴀᴍᴇ :</b> <i>{}</i>\n
 <b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <i>{}</i>\n
@@ -94,27 +87,27 @@ Links Left: <code>{}<code>"""
 class BUTTON(object):
     START_BUTTONS = InlineKeyboardMarkup(
         [[
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')
+            InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
+            InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')
         ],
         [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     )
     HELP_BUTTONS = InlineKeyboardMarkup(
         [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
+            InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
+            InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
         ],
         [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
     )
     ABOUT_BUTTONS = InlineKeyboardMarkup(
         [[
-        InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
+            InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close'),
         ],
         [InlineKeyboardButton("📢 Bot Channel", url=f'https://t.me/{Var.UPDATES_CHANNEL}')]
         ]
