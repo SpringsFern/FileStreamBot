@@ -42,7 +42,7 @@ Here's what you can do:
 <b>📦 File Size:</b> <i>{size}</i>\n
 <b>📥 Download:</b> <i>{link}</i>\n
 Link generated using <a href='https://t.me/{username}'>{firstname}</a>.\n
-<b>Note:</b> Link will only work for 24 hours.
+<b>Note:</b> Link will only work for 1 week.
 """
 
 #----------------------#

@@ -2,6 +2,7 @@
 
 import logging
 import urllib.parse
+from time import time
 from WebStreamer.bot import StreamBot
 from telethon import Button, errors
 from telethon.events import NewMessage
@@ -31,7 +32,8 @@ async def private_receive_handler(event: NewMessage.Event):
                 "name": urllib.parse.quote(file_name),
                 "size": get_size(event.message.media),
                 "id": log_msg.id,
-                "mime": urllib.parse.quote(log_msg.file.mime_type)
+                "mime": urllib.parse.quote(log_msg.file.mime_type),
+                "time": int(time())
             })
         else:
             stream_link = f"{Var.URL}dl/{log_msg.id}/{urllib.parse.quote(get_name(event.message.file))}"
