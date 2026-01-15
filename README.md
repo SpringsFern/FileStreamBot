@@ -1,6 +1,6 @@
 > ⚠️ **NOTICE**  
 > This repository has been **rewritten from scratch** and is now maintained at a new location:  
-> 👉 [https://github.com/DeekshithSH/tg-filestream](https://github.com/DeekshithSH/tg-filestream)
+> 👉 [https://github.com/SpringsFern/tg-filestream](https://github.com/SpringsFern/tg-filestream)
 
 # Telegram File Stream Bot
 This bot will give you stream links for Telegram files without waiting for them to download.
